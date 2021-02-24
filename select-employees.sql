@@ -34,3 +34,6 @@ select employee_id, salary as 급여, salary+500 as 추가급여 from employees;
 select employee_id, first_name || ' ' || last_name as name from employees;
 
 select employee_id, email || '@gmail.com' as mail from employees;
+
+-- null 찾기
+select employee_id, manager_id from employees where manager_id is null;
