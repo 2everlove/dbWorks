@@ -1,0 +1,5 @@
+-- 사용자 보기
+SHOW USER;
+
+--HR 스키마(사용자) 사용하기(계정 LOCK 풀기)
+ALTER USER HR ACCOUNT UNLOCK IDENTIFIED BY 1234;
