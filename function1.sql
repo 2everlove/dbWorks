@@ -75,7 +75,7 @@ SELECT
 FROM
     t_employee2;
 
--- 합계 구하기
+-- 합계, 평균 구하기
 
 SELECT
     SUM(salary)                   합계,
@@ -96,9 +96,80 @@ SELECT
     MIN(first_name)     최소문자값
 FROM
     t_employee2;
-    
+
 SELECT
-    MAX(first_name)+
-    MIN(first_name) 이름
+    MAX(first_name)
+    || ' '
+    || MIN(first_name) 이름
+FROM
+    t_employee2;
+    
+    
+--직무별 총급여와 평균 출력
+SELECT
+    job_id,
+    SUM(salary)     AS 직무별_총급여,
+    AVG(salary)     AS 직무별_평균급여
+FROM
+    t_employee2
+WHERE
+    employee_id >= 200
+GROUP BY
+    job_id
+ORDER BY
+    직무별_평균급여 DESC;
+
+-- 그룹된 상태에서 조건을 처리: HAVING 절 사용
+SELECT
+    job_id,
+    SUM(salary)     AS 직무별_총급여,
+    AVG(salary)     AS 직무별_평균급여
+FROM
+    t_employee2
+WHERE
+    employee_id >= 200
+GROUP BY
+    job_id
+HAVING
+    SUM(salary) >= 10000
+ORDER BY
+    직무별_평균급여 DESC;   
+
+-- NVL함수 : NULL값을 처리
+SELECT
+    last_name,
+    employee_id,
+    manager_id
+FROM
+    t_employee2
+WHERE
+    manager_id IS NULL;
+
+SELECT
+    last_name,
+    employee_id,
+    nvl(manager_id, 101)
+FROM
+    t_employee2
+WHERE
+    manager_id IS NULL;
+    
+-- 실제 데이터 변경
+UPDATE t_employee2
+SET
+    manager_id = 101
+WHERE
+    employee_id = 100;
+
+SELECT
+    first_name,
+    salary * commission_pct
+FROM
+    t_employee2;
+
+-- commission_pct의 NULL에 1을 대입
+SELECT
+    first_name,
+    salary * nvl(commission_pct, 1)
 FROM
     t_employee2;

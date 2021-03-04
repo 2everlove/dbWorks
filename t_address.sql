@@ -14,4 +14,7 @@ DESC t_address;
 -- 시퀀스(일련번호) 생성
 CREATE SEQUENCE abseq INCREMENT BY 1 START WITH 1 MINVALUE 1 MAXVALUE 1000 NOCYCLE NOCACHE;
 
-select * from t_address;
+SELECT
+    *
+FROM
+    t_address;
