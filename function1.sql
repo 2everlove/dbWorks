@@ -75,7 +75,7 @@ SELECT
 FROM
     t_employee2;
 
--- 합계, 평균 구하기
+-- 합계, 평균 구하기 //SQL*PL 내부함수 AVG(),SUM(),COUNT()
 
 SELECT
     SUM(salary)                   합계,
@@ -145,6 +145,7 @@ FROM
 WHERE
     manager_id IS NULL;
 
+--
 SELECT
     last_name,
     employee_id,
@@ -172,4 +173,42 @@ SELECT
     first_name,
     salary * nvl(commission_pct, 1)
 FROM
+    t_employee2
+ORDER BY
+    commission_pct DESC;
+
+-- DECODE(열이름, 조건, 변경값, 기본값)함수
+-- 부서아이디가 60이면 급여가 10%인상, 아니면 그대로 미인상
+SELECT
+    first_name,
+    department_id,
+    salary                                                   원래급여,
+    decode(department_id, 60, salary * 1.1, salary)            조정급여,
+    decode(department_id, 60, '10%인상', '미인상')                인상여부
+FROM
     t_employee2;
+
+--CASE WHEN con1 THEN print1 ELSE print2 END
+SELECT
+    first_name,
+    department_id,
+    salary  원래급여,
+    CASE
+        WHEN department_id = 60 THEN
+            salary * 1.1
+        ELSE
+            salary
+    END     조정급여,
+    CASE
+        WHEN department_id = 60 THEN
+            '10%인상'
+        ELSE
+            '미인상'
+    END     인상여부
+FROM
+    t_employee2;
+
+
+
+
+
