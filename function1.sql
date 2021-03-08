@@ -177,7 +177,7 @@ FROM
 ORDER BY
     commission_pct DESC;
 
--- DECODE(열이름, 조건, 변경값, 기본값)함수
+-- DECODE(열이름, 조건, 변경값, 기본값)함수 : IF THEN ELSE 구문과 비슷
 -- 부서아이디가 60이면 급여가 10%인상, 아니면 그대로 미인상
 SELECT
     first_name,
@@ -188,7 +188,7 @@ SELECT
 FROM
     t_employee2;
 
---CASE WHEN con1 THEN print1 ELSE print2 END
+--CASE WHEN 조건 THEN 변경값 ELSE 기본값 END
 SELECT
     first_name,
     department_id,
@@ -207,6 +207,22 @@ SELECT
     END     인상여부
 FROM
     t_employee2;
+
+-- RANK() 함수 : 순위 매기기
+SELECT * FROM employees;
+
+SELECT first_name, salary, 
+    RANK() OVER(ORDER BY salary DESC) 급여순위,
+    DENSE_RANK() OVER(ORDER BY salary DESC) 급여순위_dense_rank
+FROM employees;
+
+-- 부서별로 직원의 순위 매기기
+SELECT department_id, first_name, salary,
+    RANK() OVER(PARTITION BY department_id ORDER BY salary) 급여_rank,
+    DENSE_RANK() OVER(PARTITION BY department_id ORDER BY salary DESC) 급여순위_dense_rank
+FROM employees;
+
+
 
 
 

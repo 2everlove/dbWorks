@@ -43,5 +43,5 @@ WHERE
 UPDATE t_department
 SET
     manager_id = 300
-WHERE
+WHERE 
     department_id = 270;
