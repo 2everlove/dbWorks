@@ -1,0 +1,9 @@
+-- ADD a USER
+CREATE USER jweb IDENTIFIED BY 4321;
+
+-- SESSION 권한 부여
+GRANT CREATE SESSION TO jweb;
+
+-- Creating table & table space
+GRANT CREATE TABLE, RESOURCE TO jweb;
+
