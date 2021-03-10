@@ -33,5 +33,6 @@ INSERT INTO student VALUES (20211235, '박대양', 25, '남', '서울시 성동�
 INSERT INTO student VALUES (20211236, '한비양', 21, '여', '경기도 수원시', '전기전자공학과');
 --INSERT INTO student VALUES (20211267, '정산들', 25, '남', '경기도 평택시', '기계공학과'); 부모에게 '기계공학과' 는 없으므로 위배됨
 
+commit;
 
 
