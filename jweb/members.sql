@@ -44,8 +44,25 @@ DROP TABLE t_board;
 
 DELETE FROM t_board WHERE bnum = 18;
 
-commit;
+COMMIT;
 
 SELECT * FROM t_board;
 SELECT * FROM t_board WHERE memberid='ddaddut' ORDER BY bnum DESC ;
 SELECT* FROM t_member;
+
+--전체 인원수
+SELECT COUNT(*) 전체인원수 
+FROM t_member;
+
+--아이디가 mount인 개수 세기
+SELECT COUNT(*) 아이디개수 
+FROM t_member WHERE memberid='ddaddut';
+
+--memberId가 'ddaddut'이면 'true', 아니면 'false' 출력
+SELECT 
+    memberid, passwd, decode(memberid, 'ddaddut', 'true', 'false') AS result 
+FROM t_member WHERE memberid='ddaddut';
+
+-- memberId가 'mount'의 개수가 1이면 'true', 아니면 'false'
+SELECT decode(COUNT(*), 1, 'true', 'false') AS result FROM t_member WHERE memberid = 'ddaddut';
+
