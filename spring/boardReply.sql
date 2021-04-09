@@ -43,7 +43,7 @@ CREATE SEQUENCE seq_tbl_board INCREMENT BY 1 START WITH 1 MINVALUE 1 MAXVALUE 10
 select seq_tbl_board.nextval from dual;
 select seq_tbl_board.currval from dual;
 
-insert into tbl_board values (select seq_tbl_board.nextbal, title, content, writer, regdate, updatedate from tbl_board); 
+insert into tbl_board (select seq_tbl_board.nextval, title, content, writer, regdate, updatedate from tbl_board); 
 
 INSERT INTO tbl_board(bno, title, content, writer) VALUES (seq_tbl_board.nextval, '제목', '내용', '작성자');
 select * from tbl_board;
