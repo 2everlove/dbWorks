@@ -1,3 +1,4 @@
+--create table
 CREATE TABLE tbl_board (
     bno NUMBER(10) PRIMARY KEY,
     title VARCHAR2(200 BYTE) NOT NULL,
@@ -6,6 +7,10 @@ CREATE TABLE tbl_board (
     regdate DATE DEFAULT sysdate,
     updatedate DATE
 );
+
+--create sequence
+CREATE SEQUENCE seq_tbl_board;
+--CREATE SEQUENCE seq_tbl_board INCREMENT BY 1 START WITH 1 MINVALUE 1 MAXVALUE 1000 NOCYCLE NOCACHE;
 
 --주석 달아주기~
 COMMENT ON TABLE spring.tbl_board IS '게시판';
@@ -31,13 +36,12 @@ COMMENT ON TABLE spring.tbl_reply IS '답글';
 --한글은 3byte
 --NVL(value, 0) / value가 null이면 0으로 치환
 
+
+--TBL_* Test
 ALTER TABLE tbl_reply 
     ADD CONSTRAINT fk_bno 
     FOREIGN KEY(bno) 
     REFERENCES tbl_board(bno) ON DELETE CASCADE;
-
-CREATE SEQUENCE seq_tbl_board;
-CREATE SEQUENCE seq_tbl_board INCREMENT BY 1 START WITH 1 MINVALUE 1 MAXVALUE 1000 NOCYCLE NOCACHE;
 
 SELECT seq_tbl_board.NEXTVAL FROM dual;
 SELECT seq_tbl_board.CURRVAL FROM dual;
