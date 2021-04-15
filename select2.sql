@@ -10,6 +10,12 @@ SELECT DISTINCT
     department_id
 FROM
     employees;
+    
+SELECT
+    job_id,
+    department_id
+FROM
+    employees;
 
 --문자 타입 함수
 SELECT
