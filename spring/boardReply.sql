@@ -37,7 +37,6 @@ COMMENT ON TABLE spring.tbl_reply IS '답글';
 --한글은 3byte
 --NVL(value, 0) / value가 null이면 0으로 치환
 
-
 --TBL_* Test
 ALTER TABLE tbl_reply 
     ADD CONSTRAINT fk_bno 
@@ -47,14 +46,13 @@ ALTER TABLE tbl_reply
 SELECT seq_tbl_board.NEXTVAL FROM dual;
 SELECT seq_tbl_board.CURRVAL FROM dual;
 
-
 --serve query를 이용한INSERT
 INSERT INTO tbl_board (SELECT seq_tbl_board.NEXTVAL, title, content, writer, regdate, updatedate FROM tbl_board); 
 
 -- 일반적인 INSERT
 INSERT INTO tbl_board(bno, title, content, writer) VALUES (seq_tbl_board.NEXTVAL, '제목', '내용', '작성자');
 
-SELECT * FROM tbl_board;
+SELECT * FROM tbl_board order by bno;
 
 --시퀀스 제거
 DROP SEQUENCE seq_tbl_board;
@@ -64,17 +62,47 @@ DROP TABLE tbl_board;
 
 --테이블은 그대로 두고, 카디널리티만 삭제
 TRUNCATE TABLE tbl_reply;
-rollback;
+ROLLBACK;
 
 --테이블 구조
 DESC tbl_board;
 DESC tbl_reply;
 
 --bno에 해당되는 테이블
-delete tbl_board where bno=88;
+DELETE tbl_board WHERE bno=88;
 
 SHOW tables;
 
 --TCL 처리
 COMMIT;
 
+CREATE TABLE test (no NUMBER(1));
+INSERT INTO test VALUES(6);
+
+SELECT ROWNUM, no FROM test 
+--where rownum<5
+ORDER BY no DESC;
+
+SELECT ROWNUM, no FROM (SELECT no FROM test ORDER BY no DESC) WHERE ROWNUM<5;
+
+--서브쿼리 방식 1
+SELECT ROWNUM, no FROM (SELECT no FROM test ORDER BY no DESC) WHERE ROWNUM BETWEEN 1 AND 10;
+
+--서브쿼리 방식 2
+SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY a.bno) row_num, a.* FROM tbl_board a)WHERE row_num BETWEEN 1 AND 10;
+
+SELECT ROW_NUMBER() OVER (ORDER BY bno DESC) row_num, tbl.* FROM tbl_board tbl;
+
+--rownum은 1부터 시작해야 됨 (result null)
+SELECT * FROM (SELECT ROWNUM rn, bno FROM tbl_board ORDER BY bno DESC) WHERE rn BETWEEN 6 AND 10;
+
+SELECT * FROM (SELECT ROWNUM rn, bno FROM tbl_board ORDER BY bno DESC) WHERE rn <5;
+
+SELECT bno, title, content, writer, regdate, updatedate 
+		FROM (SELECT /*+INDEX_DESC(tbl_board pk_board) */
+			ROWNUM rn, bno, title, content, writer, regdate, updatedate
+		FROM tbl_board WHERE ROWNUM <= 20)
+		WHERE rn > 10;
+
+--총 건수 //삭제여부, 게시판 종류 등을 조건에 넣어서 원하는 data취함
+select count(*) from tbl_board;
