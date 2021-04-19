@@ -1,4 +1,4 @@
---create table
+--create table 방명록
 CREATE TABLE tbl_board (
     bno NUMBER(10) PRIMARY KEY,
     title VARCHAR2(200 BYTE) NOT NULL,
@@ -21,6 +21,7 @@ COMMENT ON COLUMN tbl_board.writer IS '작성자';
 COMMENT ON COLUMN tbl_board.regdate IS '작성일';
 COMMENT ON COLUMN tbl_board.updatedate IS '수정일';
 
+--create table 댓글
 CREATE TABLE tbl_reply (
     rno NUMBER(10) PRIMARY KEY,
     bno NUMBER(10) NOT NULL,
@@ -46,13 +47,18 @@ ALTER TABLE tbl_reply
 SELECT seq_tbl_board.NEXTVAL FROM dual;
 SELECT seq_tbl_board.CURRVAL FROM dual;
 
+
+--serve query를 이용한INSERT
 INSERT INTO tbl_board (SELECT seq_tbl_board.NEXTVAL, title, content, writer, regdate, updatedate FROM tbl_board); 
 
+-- 일반적인 INSERT
 INSERT INTO tbl_board(bno, title, content, writer) VALUES (seq_tbl_board.NEXTVAL, '제목', '내용', '작성자');
+
 SELECT * FROM tbl_board;
 
+--시퀀스 제거
 DROP SEQUENCE seq_tbl_board;
-    
+
 DROP TABLE tbl_reply;
 DROP TABLE tbl_board;
 
@@ -60,12 +66,15 @@ DROP TABLE tbl_board;
 TRUNCATE TABLE tbl_reply;
 rollback;
 
+--테이블 구조
 DESC tbl_board;
 DESC tbl_reply;
 
+--bno에 해당되는 테이블
 delete tbl_board where bno=88;
 
 SHOW tables;
 
+--TCL 처리
 COMMIT;
 
