@@ -29,8 +29,26 @@ CREATE TABLE tbl_reply (
     replyer VARCHAR2(50 BYTE) NOT NULL,
     replydate DATE DEFAULT sysdate,
     updatedate DATE DEFAULT sysdate,
-    CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno)
+    CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) on delete cascade
 );
+--댓글 추가
+insert into tbl_reply values (seq_reply.nextval, 203, '댓글', '댓글자', sysdate, sysdate);
+
+delete from tbl_board where bno = 204;
+
+select * from tbl_reply;
+
+--댓글 주석
+comment on table spring.tbl_reply is '댓글';
+comment on column tbl_reply.rno is '번호';
+comment on column tbl_reply.reply is '댓글';
+comment on column tbl_reply.replyer is '작성자';
+comment on column tbl_reply.replydate is '작성일';
+comment on column tbl_reply.updatedate is '수정일';
+
+--댓글 시퀀스
+create sequence seq_reply;
+
 -- CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) 에서 CONSTRAINT는 CONSTRAINT_NAME을 직접 설정 하는 것
 COMMENT ON TABLE spring.tbl_reply IS '답글';
 
@@ -52,7 +70,7 @@ INSERT INTO tbl_board (SELECT seq_tbl_board.NEXTVAL, title, content, writer, reg
 -- 일반적인 INSERT
 INSERT INTO tbl_board(bno, title, content, writer) VALUES (seq_tbl_board.NEXTVAL, '제목', '내용', '작성자');
 
-SELECT * FROM tbl_board order by bno;
+SELECT * FROM tbl_board ORDER BY bno;
 
 --시퀀스 제거
 DROP SEQUENCE seq_tbl_board;
@@ -105,4 +123,21 @@ SELECT bno, title, content, writer, regdate, updatedate
 		WHERE rn > 10;
 
 --총 건수 //삭제여부, 게시판 종류 등을 조건에 넣어서 원하는 data취함
-select count(*) from tbl_board;
+SELECT COUNT(*) FROM tbl_board;
+
+--field 검색 where ~ like ~ '%';
+SELECT * FROM tbl_board WHERE title LIKE '제%'; --'제' 로 시작하는
+SELECT * FROM tbl_board WHERE title LIKE '%목'; --'목' 으로 끝나는
+SELECT * FROM tbl_board WHERE title LIKE '%w%'; -- 'w'가 포함된
+
+SELECT bno, title, content, writer, regdate, updatedate 
+		FROM 
+			(
+			SELECT /*+INDEX_DESC(tbl_board pk_board) */
+				ROWNUM rn, bno, title, content, writer, regdate, updatedate
+			FROM tbl_board WHERE title LIKE '%따뜻%');
+
+
+select * from tbl_reply where bno = 203;
+
+commit;
