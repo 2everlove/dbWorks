@@ -32,7 +32,7 @@ CREATE TABLE tbl_reply (
     CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) on delete cascade
 );
 --댓글 추가
-insert into tbl_reply values (seq_reply.nextval, 203, '댓글', '댓글자', sysdate, sysdate);
+insert into tbl_reply values (seq_reply.nextval, 203, '오늘은 공부해야지', '나', sysdate, sysdate);
 
 delete from tbl_board where bno = 204;
 
@@ -138,6 +138,27 @@ SELECT bno, title, content, writer, regdate, updatedate
 			FROM tbl_board WHERE title LIKE '%따뜻%');
 
 
-select * from tbl_reply where bno = 203;
+select RNO ,
+BNO ,
+REPLY ,
+REPLYER ,
+REPLYDATE ,
+    case
+        when to_char(sysdate,'yyyymmdd') = to_char(updatedate,'yyyymmdd')
+        then to_char(updatedate, 'hh:mi:ss')
+        else to_char(updatedate, 'yyyy-mm-dd hh:mi:ss')
+    end as updatedate
+from tbl_reply;
+
+--date formatting
+select to_char(updatedate,'yyyymmdd'), to_char(updatedate,'yyyy-mm-dd'), to_char(sysdate,'yyyy/mm/dd'), to_char(updatedate,'yyyy-mm-dd am hh:mi:ss') from tbl_reply;
+
+select 
+    case
+        when to_char(sysdate,'yyyymmdd') = to_char(updatedate,'yyyymmdd')
+        then to_char(updatedate, 'hh:mi:ss')
+        else to_char(updatedate, 'yyyy-mm-dd hh:mi:ss')
+    end as updatedate
+from tbl_reply;
 
 commit;
