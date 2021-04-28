@@ -29,25 +29,27 @@ CREATE TABLE tbl_reply (
     replyer VARCHAR2(50 BYTE) NOT NULL,
     replydate DATE DEFAULT sysdate,
     updatedate DATE DEFAULT sysdate,
-    CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) on delete cascade
+    CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) ON DELETE CASCADE
 );
 --댓글 추가
-insert into tbl_reply values (seq_reply.nextval, 203, '오늘은 공부해야지', '나', sysdate, sysdate);
+INSERT INTO tbl_reply VALUES (seq_reply.NEXTVAL, 202, '댓글 comment', 'replyer', sysdate, sysdate);
 
-delete from tbl_board where bno = 204;
+COMMIT;
 
-select * from tbl_reply;
+DELETE FROM tbl_board WHERE bno = 204;
+
+SELECT * FROM tbl_reply;
 
 --댓글 주석
-comment on table spring.tbl_reply is '댓글';
-comment on column tbl_reply.rno is '번호';
-comment on column tbl_reply.reply is '댓글';
-comment on column tbl_reply.replyer is '작성자';
-comment on column tbl_reply.replydate is '작성일';
-comment on column tbl_reply.updatedate is '수정일';
+COMMENT ON TABLE spring.tbl_reply IS '댓글';
+COMMENT ON COLUMN tbl_reply.rno IS '번호';
+COMMENT ON COLUMN tbl_reply.reply IS '댓글';
+COMMENT ON COLUMN tbl_reply.replyer IS '작성자';
+COMMENT ON COLUMN tbl_reply.replydate IS '작성일';
+COMMENT ON COLUMN tbl_reply.updatedate IS '수정일';
 
 --댓글 시퀀스
-create sequence seq_reply;
+CREATE SEQUENCE seq_reply;
 
 -- CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) 에서 CONSTRAINT는 CONSTRAINT_NAME을 직접 설정 하는 것
 COMMENT ON TABLE spring.tbl_reply IS '답글';
@@ -137,28 +139,60 @@ SELECT bno, title, content, writer, regdate, updatedate
 				ROWNUM rn, bno, title, content, writer, regdate, updatedate
 			FROM tbl_board WHERE title LIKE '%따뜻%');
 
-
-select RNO ,
-BNO ,
-REPLY ,
-REPLYER ,
-REPLYDATE ,
-    case
-        when to_char(sysdate,'yyyymmdd') = to_char(updatedate,'yyyymmdd')
-        then to_char(updatedate, 'hh:mi:ss')
-        else to_char(updatedate, 'yyyy-mm-dd hh:mi:ss')
-    end as updatedate
-from tbl_reply;
+SELECT rno ,
+bno ,
+reply ,
+replyer ,
+replydate ,
+    CASE
+        WHEN to_char(sysdate,'yyyymmdd') = to_char(updatedate,'yyyymmdd')
+        THEN to_char(updatedate, 'hh:mi:ss')
+        ELSE to_char(updatedate, 'yyyy-mm-dd hh:mi:ss')
+    END AS updatedate
+FROM tbl_reply;
 
 --date formatting
-select to_char(updatedate,'yyyymmdd'), to_char(updatedate,'yyyy-mm-dd'), to_char(sysdate,'yyyy/mm/dd'), to_char(updatedate,'yyyy-mm-dd am hh:mi:ss') from tbl_reply;
+SELECT to_char(updatedate,'yyyymmdd'), to_char(updatedate,'yyyy-mm-dd'), to_char(sysdate,'yyyy/mm/dd'), to_char(updatedate,'yyyy-mm-dd am hh:mi:ss') FROM tbl_reply;
 
-select 
-    case
-        when to_char(sysdate,'yyyymmdd') = to_char(updatedate,'yyyymmdd')
-        then to_char(updatedate, 'hh:mi:ss')
-        else to_char(updatedate, 'yyyy-mm-dd hh:mi:ss')
-    end as updatedate
-from tbl_reply;
+SELECT 
+    CASE
+        WHEN to_char(sysdate,'yyyymmdd') = to_char(updatedate,'yyyymmdd')
+        THEN to_char(updatedate, 'hh:mi:ss')
+        ELSE to_char(updatedate, 'yyyy-mm-dd hh:mi:ss')
+    END AS updatedate
+FROM tbl_reply;
 
-commit;
+SELECT ROW_NUMBER() OVER (PARTITION BY bno ORDER BY rno DESC);
+
+--댓글
+
+SELECT rn, rno, bno, reply, replyer, replydate ,
+    CASE
+        WHEN TO_CHAR(SYSDATE,'yyyymmdd') = TO_CHAR(UPDATEDATE,'yyyymmdd')
+        THEN TO_CHAR(UPDATEDATE, 'hh:mi:ss')
+        ELSE TO_CHAR(UPDATEDATE, 'yyyy-mm-dd hh:mi:ss')
+    END AS UPDATEDATE
+FROM (
+    SELECT ROW_NUMBER() OVER (ORDER BY RNO DESC) RN, reply.*
+    FROM TBL_REPLY reply
+    WHERE BNO = 203
+    ORDER BY RNO DESC
+) WHERE RN BETWEEN 1 AND 10;
+
+SELECT RN, RNO, BNO, REPLY, REPLYER, REPLYDATE, 
+    CASE
+        WHEN TO_CHAR(SYSDATE,'yyyymmdd') = TO_CHAR(UPDATEDATE,'yyyymmdd')
+        THEN TO_CHAR(UPDATEDATE, 'hh:mi:ss')
+        ELSE TO_CHAR(UPDATEDATE, 'yyyy-mm-dd hh:mi:ss')
+    END UPDATEDATE
+FROM (
+    SELECT ROW_NUMBER() OVER (ORDER BY RNO DESC) RN, reply.*
+    FROM tbl_reply reply
+    WHERE bno=203
+    ORDER BY rno DESC
+    ) 
+WHERE rn BETWEEN 1 AND 10;
+
+COMMIT;
+
+select count(*) from tbl_reply where bno=203;
