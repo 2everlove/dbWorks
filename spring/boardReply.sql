@@ -194,5 +194,20 @@ FROM (
 WHERE rn BETWEEN 1 AND 10;
 
 COMMIT;
+rollback;
 
 select count(*) from tbl_reply where bno=203;
+
+select * from tbl_reply where bno = 202;
+
+--board에 reply count colmun 추가
+alter table tbl_reply drop column replyent;
+
+--query가 실행 될 시점 : 수정이 있을 때
+update tbl_board
+set replycnt = (select count(*) from tbl_reply where bno = 203)
+where bno = 203;
+
+select * from tbl_board order by bno desc ;
+
+desc tbl_reply;
