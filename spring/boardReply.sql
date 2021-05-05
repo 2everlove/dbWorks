@@ -12,6 +12,8 @@ CREATE TABLE tbl_board (
 CREATE SEQUENCE seq_tbl_board;
 --CREATE SEQUENCE seq_tbl_board INCREMENT BY 1 START WITH 1 MINVALUE 1 MAXVALUE 1000 NOCYCLE NOCACHE;
 
+desc tbl_board;
+
 --주석 달아주기~
 COMMENT ON TABLE spring.tbl_board IS '게시판';
 COMMENT ON COLUMN tbl_board.bno IS '번호';
@@ -34,6 +36,7 @@ CREATE TABLE tbl_reply (
 --댓글 추가
 INSERT INTO tbl_reply VALUES (seq_reply.NEXTVAL, 202, '댓글 comment', 'replyer', sysdate, sysdate);
 
+
 COMMIT;
 
 DELETE FROM tbl_board WHERE bno = 204;
@@ -53,6 +56,40 @@ CREATE SEQUENCE seq_reply;
 
 -- CONSTRAINT fk_bno FOREIGN KEY(bno) REFERENCES tbl_board(bno) 에서 CONSTRAINT는 CONSTRAINT_NAME을 직접 설정 하는 것
 COMMENT ON TABLE spring.tbl_reply IS '답글';
+
+--creating table file
+create table tbl_attach(
+    attachno number(10) not null,
+    uuid varchar2(100) not null,
+    uploadPath varchar2(200) not null,
+    fileName varchar2(100) not null,
+    filetype char(1),
+    regdate date
+);
+
+COMMIT;
+
+select seq_attach.nextval from dual;
+
+select * from tbl_attach order by attachno desc;
+
+-- 시퀀스 생성
+create sequence seq_attach; 
+
+-- PK 생성
+alter table tbl_attach add constraint pk_attach primary key (uuid); 
+
+-- 1건 삽입
+insert into tbl_attach values (SEQ_ATTACH.nextval, 'uuid', 'uploadPath', 'filename', 'N', sysdate);
+
+-- board 테이블에 첨부파일 컬럼 생성
+alter table tbl_board add (attachNo number(10));
+
+select attachno,uuid,uploadPath,fileName,filetype as image
+        , uploadPath||uuid|| '_' ||fileName as savepath
+        , uploadPath||uuid|| '_' ||fileName as s_savepath
+from tbl_attach
+where attachNo = 1;
 
 --한글은 3byte
 --NVL(value, 0) / value가 null이면 0으로 치환
@@ -196,18 +233,61 @@ WHERE rn BETWEEN 1 AND 10;
 COMMIT;
 rollback;
 
-select count(*) from tbl_reply where bno=203;
+select * from tbl_board where bno=201;
 
-select * from tbl_reply where bno = 202;
+select * from tbl_reply where bno = 201;
 
 --board에 reply count colmun 추가
 alter table tbl_reply drop column replyent;
 
 --query가 실행 될 시점 : 수정이 있을 때
 update tbl_board
-set replycnt = (select count(*) from tbl_reply where bno = 203)
-where bno = 203;
+set replycnt = (select count(*) from tbl_reply where bno = 201)
+where bno = 201;
 
 select * from tbl_board order by bno desc ;
 
 desc tbl_reply;
+
+---------------------------백업용
+
+CREATE SEQUENCE seq_board_bk;
+
+CREATE TABLE tbl_board_bk (
+    bkno      NUMBER(10, 0) PRIMARY KEY,
+    bno       NUMBER(10, 0) NOT NULL,
+    title     VARCHAR2(200) NOT NULL,
+    content   VARCHAR2(2000) NOT NULL,
+    writer    VARCHAR2(50) NOT NULL,
+    regdate DATE DEFAULT sysdate,
+    updatedate DATE DEFAULT sysdate,
+    editdate  DATE DEFAULT sysdate
+);
+
+select * from tbl_board_bk;
+
+INSERT INTO tbl_board_bk
+    ( SELECT
+        seq_board_bk.NEXTVAL,
+        bno,
+        title,
+        content,
+        writer,
+        regdate,
+        updatedate,
+        sysdate
+    FROM
+        tbl_board
+    WHERE
+        bno = 201
+    );
+
+--
+select bno,title, content, writer, regdate,updatedate,replycnt from (
+select rownum, bno, title, content, writer, regdate, updatedate, replycnt from tbl_board order by bno desc);
+
+select * from tbl_board where bno = 246;
+
+insert into tbl_board (bno, title, content, writer, updatedate) values(seq_tbl_board.nextval, '제목ㅇㅇ', 'ㅇㅂㅇ', '작성자', sysdate);
+commit;
+
