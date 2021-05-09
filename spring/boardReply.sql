@@ -69,6 +69,8 @@ create table tbl_attach(
 
 COMMIT;
 
+rollback;
+
 select seq_attach.nextval from dual;
 
 select * from tbl_attach order by attachno desc;
@@ -82,14 +84,16 @@ alter table tbl_attach add constraint pk_attach primary key (uuid);
 -- 1건 삽입
 insert into tbl_attach values (SEQ_ATTACH.nextval, 'uuid', 'uploadPath', 'filename', 'N', sysdate);
 
+--1건 삭제
+delete from tbl_attach where uuid='f7331f17-c100-4e0e-8cba-9ad0f64d10' and attachNo=94;
+
 -- board 테이블에 첨부파일 컬럼 생성
 alter table tbl_board add (attachNo number(10));
 
-select attachno,uuid,uploadPath,fileName,filetype as image
+select attachNo,uuid,uploadPath,fileName,filetype,regdate
         , uploadPath||uuid|| '_' ||fileName as savepath
-        , uploadPath||uuid|| '_' ||fileName as s_savepath
-from tbl_attach
-where attachNo = 1;
+        , uploadPath||'s_'||uuid|| '_' ||fileName as s_savepath
+from tbl_attach order by attachno desc;
 
 --한글은 3byte
 --NVL(value, 0) / value가 null이면 0으로 치환
