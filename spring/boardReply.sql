@@ -237,12 +237,13 @@ WHERE rn BETWEEN 1 AND 10;
 COMMIT;
 rollback;
 
-select * from tbl_board where bno=201;
+select * from tbl_board where bno=264;
 
 select * from tbl_reply where bno = 201;
 
 --board에 reply count colmun 추가
 alter table tbl_reply drop column replyent;
+alter table tbl_board add replycnt number(10);
 
 --query가 실행 될 시점 : 수정이 있을 때
 update tbl_board
@@ -287,8 +288,8 @@ INSERT INTO tbl_board_bk
     );
 
 --
-select bno,title, content, writer, regdate,updatedate,replycnt from (
-select rownum, bno, title, content, writer, regdate, updatedate, replycnt from tbl_board order by bno desc);
+select bno,title, content, writer, regdate,updatedate,replycnt,attachno from (
+select rownum, bno, title, content, writer, regdate, updatedate, replycnt,attachno from tbl_board order by bno desc);
 
 select * from tbl_board where bno = 246;
 
