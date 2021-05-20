@@ -6,6 +6,8 @@ CREATE TABLE common_file ( --파일(사진, 썸네일 등등)
     file_usingType varchar2(20) not null, --이용하는 유형(0-user, 1-공지, 2-문의, 3-상품)
     file_regdate DATE DEFAULT sysdate --생성일
 );
+create SEQUENCE file_sequence; --사진아이디 시퀀스
+
 
 CREATE TABLE products_info ( --상품 정보
     product_id varchar2(20) PRIMARY KEY, --상품 아이디
@@ -17,7 +19,7 @@ CREATE TABLE products_info ( --상품 정보
     product_regdate DATE DEFAULT sysdate, --상품 등록일
     CONSTRAINT fk_file_products FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
-
+create SEQUENCE products_sequence; --상품 정보 시퀀스
 
 CREATE TABLE user_info ( --회원 정보
     user_id varchar2(100) PRIMARY KEY, --아이디
@@ -51,6 +53,8 @@ CREATE TABLE product_board ( --상품 상세 게시판
     CONSTRAINT fk_user_pboard FOREIGN KEY(user_id) REFERENCES user_info(user_id),
     CONSTRAINT fk_file_pboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
+create SEQUENCE pboard_sequence; --상품 게시판 번호 시퀀스
+
 
 CREATE TABLE notice_board ( --공지 게시판
     nboard_no NUMBER(10) PRIMARY KEY, --공지 번호
@@ -65,6 +69,8 @@ CREATE TABLE notice_board ( --공지 게시판
     CONSTRAINT fk_user_nboard FOREIGN KEY(user_id) REFERENCES user_info(user_id), --공지 작성자
     CONSTRAINT fk_file_nboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
+create sequence nboard_sequence; --공지 번호 시퀀스
+
 
 CREATE TABLE notice_reply ( --공지 댓글
     nreply_no varchar2(20) PRIMARY KEY, --댓글 번호
@@ -79,6 +85,8 @@ CREATE TABLE notice_reply ( --공지 댓글
     CONSTRAINT fk_file_notice FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId),
     CONSTRAINT fk_nboard_nreply FOREIGN KEY(nboard_no) REFERENCES notice_board(nboard_no)
 );
+create sequence nreply_sequence; --공지 댓글 번호 시퀀스
+
 
 CREATE TABLE inquiry_board ( --문의 게시판
     iboard_no NUMBER(10) PRIMARY KEY, --문의 번호
@@ -87,19 +95,23 @@ CREATE TABLE inquiry_board ( --문의 게시판
     iboard_regdate DATE DEFAULT sysdate, -- 문의 작성일
     iboard_category VARCHAR2(30) NOT NULL, --분류 (0-?, 1-?)
     iboard_public CHAR(1) NOT NULL, --공개여부
-    user_id varchar2(100) not null,
+    user_id varchar2(100) not null, --fk
     CONSTRAINT fk_user_iboard FOREIGN KEY(user_id) REFERENCES user_info(user_id) --문의 작성자
 );
+create sequence iboard_sequence; -- 문의 번호 시퀀스
+
 
 CREATE TABLE inquiry_reply ( --문의 댓글
     ireply_no NUMBER(10) PRIMARY KEY, --댓글 번호
     ireply_content varchar2(200) NOT NULL, --댓글 내용
     ireply_regdate DATE DEFAULT sysdate, --댓글 작성일
-    user_id varchar2(100) not null,
-    iboard_no NUMBER(10) not null,
+    user_id varchar2(100) not null, --fk
+    iboard_no NUMBER(10) not null, --fk
     CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES user_info(user_id), --댓글 작성자
     CONSTRAINT fk_iboard_ireply FOREIGN KEY(iboard_no) REFERENCES inquiry_board(iboard_no) --문의 글 번호
 );
+create sequence ireply_sequence; -- 문의 댓글 번호 시퀀스
+
 
 CREATE TABLE order_board ( --주문 게시판
     order_id varchar2(20) PRIMARY KEY, --주문 아이디
@@ -113,21 +125,32 @@ CREATE TABLE order_board ( --주문 게시판
     CONSTRAINT fk_products_order FOREIGN KEY(product_id) REFERENCES products_info(product_id), --상품 아이디(아이디, 색)
     CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 재고
 );
+create sequence order_sequence; --주문 아이디 용 시퀀스
 
 commit;
 
-/* 
+ 
 --삭제 순서
-drop table order_board;
+--테이블 삭제
 drop table inquiry_reply;
 drop table notice_reply;
 drop table inquiry_board;
 drop table notice_board;
+drop table order_board;
 drop table product_board;
 drop table products_info;
 drop table user_info;
 drop table common_file;
-*/
+--시퀀스 삭제
+drop sequence order_sequence;
+drop sequence ireply_sequence;
+drop sequence iboard_sequence;
+drop sequence nreply_sequence;
+drop sequence nboard_sequence;
+drop sequence pboard_sequence;
+drop sequence products_sequence;
+drop sequence file_sequence;
+
 
 
 
