@@ -6,6 +6,7 @@ CREATE TABLE common_file ( --파일(사진, 썸네일 등등)
     file_usingType varchar2(20) not null, --이용하는 유형(0-user, 1-공지, 2-문의, 3-상품)
     file_regdate DATE DEFAULT sysdate --생성일
 );
+alter table common_file add (file_name varchar2(100) not Null);
 create SEQUENCE file_sequence; --사진아이디 시퀀스
 
 
