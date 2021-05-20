@@ -114,6 +114,8 @@ CREATE TABLE order_board ( --주문 게시판
     CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 재고
 );
 
+commit;
+
 /* 
 --삭제 순서
 drop table order_board;
@@ -131,4 +133,4 @@ drop table common_file;
 
 
 
-desc products_info;
+--desc products_info;
