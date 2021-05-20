@@ -123,7 +123,7 @@ CREATE TABLE order_board ( --주문 게시판
     pboard_unit_no varchar2(20) not null,
     CONSTRAINT fk_user_order FOREIGN KEY(user_id) REFERENCES user_info(user_id), --회원 아이디
     CONSTRAINT fk_products_order FOREIGN KEY(product_id) REFERENCES products_info(product_id), --상품 아이디(아이디, 색)
-    CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 재고
+    CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 게시글 번호(재고)
 );
 create sequence order_sequence; --주문 아이디 용 시퀀스
 
