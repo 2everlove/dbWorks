@@ -1,0 +1,134 @@
+CREATE TABLE common_file ( --파일(사진, 썸네일 등등)
+    file_pictureId varchar2(100) PRIMARY KEY,--사진 아이디
+    file_uuid varchar2(100) not null, -- uuid
+    file_uploadPath VARCHAR2(200) NOT NULL, --업로드 경로
+    file_type VARCHAR2(20) NOT NULL, --파일 유형(jpeg, txt 등등)
+    file_usingType varchar2(20) not null, --이용하는 유형(0-user, 1-공지, 2-문의, 3-상품)
+    file_regdate DATE DEFAULT sysdate --생성일
+);
+
+CREATE TABLE products_info ( --상품 정보
+    product_id varchar2(20) PRIMARY KEY, --상품 아이디
+    file_pictureId varchar2(100) not null, --fk
+    product_manufacturer varchar2(200) NOT NULL, --상품 제조사
+    product_name VARCHAR2(20) NOT NULL, --상품 이름
+    product_category VARCHAR2(10) NOT NULL, --상품 분류
+    product_color VARCHAR2(10) NOT NULL, --상품 색
+    product_regdate DATE DEFAULT sysdate, --상품 등록일
+    CONSTRAINT fk_file_products FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+);
+
+
+CREATE TABLE user_info ( --회원 정보
+    user_id varchar2(100) PRIMARY KEY, --아이디
+    file_pictureId varchar2(100) not null, --fk
+    user_email varchar2(100) not null UNIQUE, --이메일
+    user_name VARCHAR2(30) NOT NULL, --이름
+    user_password VARCHAR2(200) NOT NULL, --비번
+    user_contact VARCHAR2(30) NOT NULL, --연락처
+    user_enabled VARCHAR2(10) NOT NULL, --활성화(0-블럭, 1- 사용, 2-탈퇴)
+    user_type VARCHAR2(10) NOT NULL, --회원 유형 (0-관리자, 1-기업, 2-회원)
+    user_regdate DATE DEFAULT SYSDATE, -- 가입일
+    user_gender VARCHAR2(10), --성별
+    user_birth DATE, --생일
+    user_address VARCHAR2(200),--주소
+    user_interesting VARCHAR2(200), --관심사
+    user_enabledContent VARCHAR2(300), --활성화 내용(블럭,탈퇴 시 입력)
+    CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+);
+
+CREATE TABLE product_board ( --상품 상세 게시판
+    pboard_unit_no varchar2(20) PRIMARY KEY, --게시판 번호
+    pboard_unit_price varchar2(200) NOT NULL, --상품 가격
+    pboard_unit_condition VARCHAR2(20) NOT NULL, --상품 상태(0-신상, 1-할인, 2-중고)
+    pboard_unit_stocks VARCHAR2(10) NOT NULL, --상품 재고
+    pboard_unit_regdate DATE DEFAULT sysdate, --상품 게시판 등록일
+    pboard_unit_updateDate DATE DEFAULT sysdate, --상품 게시판 수정일
+    product_id varchar2(20) not null,
+    user_id varchar2(100) not null,
+    file_pictureId varchar2(100) not null,
+    CONSTRAINT fk_products_pboard FOREIGN KEY(product_id) REFERENCES products_info(product_id),
+    CONSTRAINT fk_user_pboard FOREIGN KEY(user_id) REFERENCES user_info(user_id),
+    CONSTRAINT fk_file_pboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+);
+
+CREATE TABLE notice_board ( --공지 게시판
+    nboard_no NUMBER(10) PRIMARY KEY, --공지 번호
+    nboard_title varchar2(200) NOT NULL, --공지 제목
+    nboard_content varchar2(2000) NOT NULL, --공지 내용
+    nboard_regdate DATE DEFAULT sysdate, -- 공지 생성일
+    nboard_updateDate DATE DEFAULT sysdate, --공지 수정일
+    nboard_category VARCHAR2(30) NOT NULL, --분류 (0-공지, 1-이벤트)
+    nboard_public CHAR(1) NOT NULL, --공개여부
+    user_id varchar2(100) not null,
+    file_pictureId varchar2(100) not null,
+    CONSTRAINT fk_user_nboard FOREIGN KEY(user_id) REFERENCES user_info(user_id), --공지 작성자
+    CONSTRAINT fk_file_nboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+);
+
+CREATE TABLE notice_reply ( --공지 댓글
+    nreply_no varchar2(20) PRIMARY KEY, --댓글 번호
+    nreply_content varchar2(200) NOT NULL, --댓글 내용
+    nreply_regdate DATE DEFAULT sysdate, --댓글 작성일
+    nreply_updateDate DATE DEFAULT sysdate, --댓글 수정일
+    nreply_re_reply DATE DEFAULT sysdate, --댓글의 댓글
+    user_id varchar2(100) not null,
+    file_pictureId varchar2(100) not null,
+    nboard_no NUMBER(10) not null,
+    CONSTRAINT fk_user_notice FOREIGN KEY(user_id) REFERENCES user_info(user_id), --댓글 작성자
+    CONSTRAINT fk_file_notice FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId),
+    CONSTRAINT fk_nboard_nreply FOREIGN KEY(nboard_no) REFERENCES notice_board(nboard_no)
+);
+
+CREATE TABLE inquiry_board ( --문의 게시판
+    iboard_no NUMBER(10) PRIMARY KEY, --문의 번호
+    iboard_title varchar2(200) NOT NULL, --문의 제목
+    iboard_content varchar2(2000) NOT NULL, --문의 내용
+    iboard_regdate DATE DEFAULT sysdate, -- 문의 작성일
+    iboard_category VARCHAR2(30) NOT NULL, --분류 (0-?, 1-?)
+    iboard_public CHAR(1) NOT NULL, --공개여부
+    user_id varchar2(100) not null,
+    CONSTRAINT fk_user_iboard FOREIGN KEY(user_id) REFERENCES user_info(user_id) --문의 작성자
+);
+
+CREATE TABLE inquiry_reply ( --문의 댓글
+    ireply_no NUMBER(10) PRIMARY KEY, --댓글 번호
+    ireply_content varchar2(200) NOT NULL, --댓글 내용
+    ireply_regdate DATE DEFAULT sysdate, --댓글 작성일
+    user_id varchar2(100) not null,
+    iboard_no NUMBER(10) not null,
+    CONSTRAINT fk_user_id FOREIGN KEY(user_id) REFERENCES user_info(user_id), --댓글 작성자
+    CONSTRAINT fk_iboard_ireply FOREIGN KEY(iboard_no) REFERENCES inquiry_board(iboard_no) --문의 글 번호
+);
+
+CREATE TABLE order_board ( --주문 게시판
+    order_id varchar2(20) PRIMARY KEY, --주문 아이디
+    order_address varchar2(200) NOT NULL, --배송주소
+    order_name varchar2(20) NOT NULL, --받는 사람
+    order_regdate DATE DEFAULT sysdate,
+    user_id varchar2(100) not null,
+    product_id varchar2(20) not null,
+    pboard_unit_no varchar2(20) not null,
+    CONSTRAINT fk_user_order FOREIGN KEY(user_id) REFERENCES user_info(user_id), --회원 아이디
+    CONSTRAINT fk_products_order FOREIGN KEY(product_id) REFERENCES products_info(product_id), --상품 아이디(아이디, 색)
+    CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 재고
+);
+
+/* 
+--삭제 순서
+drop table order_board;
+drop table inquiry_reply;
+drop table notice_reply;
+drop table inquiry_board;
+drop table notice_board;
+drop table product_board;
+drop table products_info;
+drop table user_info;
+drop table common_file;
+*/
+
+
+
+
+
+desc products_info;
