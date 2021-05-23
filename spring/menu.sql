@@ -23,3 +23,15 @@ Insert into MENU (MENU_ID,TITLE,URL,UP_MENU_ID,SORT,VISIBLE) values ('m11','5-�
 
 
 commit;
+
+SELECT
+    level, -- 루트를 기준으로 1레벨 시작
+    up_menu_id, -- 상위메뉴
+    menu_id, -- 메뉴
+    title, -- 메뉴명
+    url -- 메뉴 주소
+FROM
+    menu
+START WITH up_menu_id IS NULL -- 루트노드(시작)는 상위메뉴가 null
+CONNECT BY up_menu_id = PRIOR menu_id  -- 부모 자식관계
+ORDER SIBLINGS BY  sort; -- 정렬

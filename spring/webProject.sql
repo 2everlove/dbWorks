@@ -47,9 +47,9 @@ CREATE TABLE product_board ( --상품 상세 게시판
     pboard_unit_stocks VARCHAR2(10) NOT NULL, --상품 재고
     pboard_unit_regdate DATE DEFAULT sysdate, --상품 게시판 등록일
     pboard_unit_updateDate DATE DEFAULT sysdate, --상품 게시판 수정일
-    product_id varchar2(20) not null,
-    user_id varchar2(100) not null,
-    file_pictureId varchar2(100) not null,
+    product_id varchar2(20) not null, --fk
+    user_id varchar2(100) not null, --fk
+    file_pictureId varchar2(100) not null, --fk
     CONSTRAINT fk_products_pboard FOREIGN KEY(product_id) REFERENCES products_info(product_id),
     CONSTRAINT fk_user_pboard FOREIGN KEY(user_id) REFERENCES user_info(user_id),
     CONSTRAINT fk_file_pboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
@@ -79,9 +79,9 @@ CREATE TABLE notice_reply ( --공지 댓글
     nreply_regdate DATE DEFAULT sysdate, --댓글 작성일
     nreply_updateDate DATE DEFAULT sysdate, --댓글 수정일
     nreply_re_reply DATE DEFAULT sysdate, --댓글의 댓글
-    user_id varchar2(100) not null,
-    file_pictureId varchar2(100) not null,
-    nboard_no NUMBER(10) not null,
+    user_id varchar2(100) not null, --fk
+    file_pictureId varchar2(100) not null, --fk
+    nboard_no NUMBER(10) not null, --fk
     CONSTRAINT fk_user_notice FOREIGN KEY(user_id) REFERENCES user_info(user_id), --댓글 작성자
     CONSTRAINT fk_file_notice FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId),
     CONSTRAINT fk_nboard_nreply FOREIGN KEY(nboard_no) REFERENCES notice_board(nboard_no)
@@ -118,10 +118,12 @@ CREATE TABLE order_board ( --주문 게시판
     order_id varchar2(20) PRIMARY KEY, --주문 아이디
     order_address varchar2(200) NOT NULL, --배송주소
     order_name varchar2(20) NOT NULL, --받는 사람
-    order_regdate DATE DEFAULT sysdate,
-    user_id varchar2(100) not null,
-    product_id varchar2(20) not null,
-    pboard_unit_no varchar2(20) not null,
+    order_regdate DATE DEFAULT sysdate,--주문일
+    ordder_cancelDate Date, --주문 취소일
+    order_status varchar2(20) not null, --상태(1-주문완료, 2-택배사전달, 3-배송준비, 4-배송중, 5-배송완료, 0-주문취소)
+    user_id varchar2(100) not null, --fk
+    product_id varchar2(20) not null, --fk
+    pboard_unit_no varchar2(20) not null, --fk
     CONSTRAINT fk_user_order FOREIGN KEY(user_id) REFERENCES user_info(user_id), --회원 아이디
     CONSTRAINT fk_products_order FOREIGN KEY(product_id) REFERENCES products_info(product_id), --상품 아이디(아이디, 색)
     CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 게시글 번호(재고)
