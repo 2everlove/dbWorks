@@ -1,12 +1,12 @@
 CREATE TABLE common_file ( --파일(사진, 썸네일 등등)
     file_pictureId varchar2(100) PRIMARY KEY,--사진 아이디
     file_uuid varchar2(100) not null, -- uuid
+    file_name varchar2(100) not Null, --파일 이름
     file_uploadPath VARCHAR2(200) NOT NULL, --업로드 경로
     file_type VARCHAR2(20) NOT NULL, --파일 유형(jpeg, txt 등등)
     file_usingType varchar2(20) not null, --이용하는 유형(0-user, 1-공지, 2-문의, 3-상품)
     file_regdate DATE DEFAULT sysdate --생성일
 );
-alter table common_file add (file_name varchar2(100) not Null);
 create SEQUENCE file_sequence; --사진아이디 시퀀스
 
 
@@ -15,6 +15,7 @@ CREATE TABLE products_info ( --상품 정보
     file_pictureId varchar2(100) not null, --fk
     product_manufacturer varchar2(200) NOT NULL, --상품 제조사
     product_name VARCHAR2(20) NOT NULL, --상품 이름
+    product_description VARCHAR2(500), --상품 설명
     product_category VARCHAR2(10) NOT NULL, --상품 분류
     product_color VARCHAR2(10) NOT NULL, --상품 색
     product_regdate DATE DEFAULT sysdate, --상품 등록일
@@ -39,6 +40,7 @@ CREATE TABLE user_info ( --회원 정보
     user_enabledContent VARCHAR2(300), --활성화 내용(블럭,탈퇴 시 입력)
     CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
+create sequence user_sequence; --유저 시퀀스
 
 CREATE TABLE product_board ( --상품 상세 게시판
     pboard_unit_no varchar2(20) PRIMARY KEY, --게시판 번호
