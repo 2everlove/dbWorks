@@ -40,6 +40,7 @@ CREATE TABLE user_info ( --회원 정보
     user_enabledContent VARCHAR2(300), --활성화 내용(블럭,탈퇴 시 입력)
     CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
+alter table user_info add(user_nickname varchar2(50));
 create sequence user_sequence; --유저 시퀀스
 
 CREATE TABLE product_board ( --상품 상세 게시판
@@ -130,6 +131,8 @@ CREATE TABLE order_board ( --주문 게시판
     CONSTRAINT fk_products_order FOREIGN KEY(product_id) REFERENCES products_info(product_id), --상품 아이디(아이디, 색)
     CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 게시글 번호(재고)
 );
+alter table order_board add(order_totalprice varchar2(1000) not null); -- 가격
+alter table order_board add(order_totalcount varchar2(100) not null); --갯수
 create sequence order_sequence; --주문 아이디 용 시퀀스
 
 commit;
