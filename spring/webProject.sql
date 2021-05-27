@@ -1,6 +1,6 @@
 CREATE TABLE common_file ( --파일(사진, 썸네일 등등)
-    file_pictureId varchar2(100) PRIMARY KEY,--사진 아이디
-    file_uuid varchar2(100) not null, -- uuid
+    file_pictureId varchar2(100) not null,--사진 아이디
+    file_uuid varchar2(100) PRIMARY KEY, -- uuid
     file_name varchar2(100) not Null, --파일 이름
     file_uploadPath VARCHAR2(200) NOT NULL, --업로드 경로
     file_type VARCHAR2(20) NOT NULL, --파일 유형(jpeg, txt 등등)
@@ -18,8 +18,8 @@ CREATE TABLE products_info ( --상품 정보
     product_description VARCHAR2(500), --상품 설명
     product_category VARCHAR2(10) NOT NULL, --상품 분류
     product_color VARCHAR2(10) NOT NULL, --상품 색
-    product_regdate DATE DEFAULT sysdate, --상품 등록일
-    CONSTRAINT fk_file_products FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+    product_regdate DATE DEFAULT sysdate --상품 등록일
+    --CONSTRAINT fk_file_products FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
 create SEQUENCE products_sequence; --상품 정보 시퀀스
 
@@ -33,14 +33,15 @@ CREATE TABLE user_info ( --회원 정보
     user_enabled VARCHAR2(10) NOT NULL, --활성화(0-블럭, 1- 사용, 2-탈퇴)
     user_type VARCHAR2(10) NOT NULL, --회원 유형 (0-관리자, 1-기업, 2-회원)
     user_regdate DATE DEFAULT SYSDATE, -- 가입일
+    user_nickname varchar2(50),
     user_gender VARCHAR2(10), --성별
     user_birth DATE, --생일
     user_address VARCHAR2(200),--주소
     user_interesting VARCHAR2(200), --관심사
-    user_enabledContent VARCHAR2(300), --활성화 내용(블럭,탈퇴 시 입력)
-    CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+    user_enabledContent VARCHAR2(300) --활성화 내용(블럭,탈퇴 시 입력)
+    --CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
-alter table user_info add(user_nickname varchar2(50));
+--alter table user_info add(user_nickname varchar2(50));
 create sequence user_sequence; --유저 시퀀스
 
 CREATE TABLE product_board ( --상품 상세 게시판
@@ -54,8 +55,8 @@ CREATE TABLE product_board ( --상품 상세 게시판
     user_id varchar2(100) not null, --fk
     file_pictureId varchar2(100) not null, --fk
     CONSTRAINT fk_products_pboard FOREIGN KEY(product_id) REFERENCES products_info(product_id),
-    CONSTRAINT fk_user_pboard FOREIGN KEY(user_id) REFERENCES user_info(user_id),
-    CONSTRAINT fk_file_pboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+    CONSTRAINT fk_user_pboard FOREIGN KEY(user_id) REFERENCES user_info(user_id)
+    --CONSTRAINT fk_file_pboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
 create SEQUENCE pboard_sequence; --상품 게시판 번호 시퀀스
 
@@ -70,8 +71,8 @@ CREATE TABLE notice_board ( --공지 게시판
     nboard_public CHAR(1) NOT NULL, --공개여부
     user_id varchar2(100) not null,
     file_pictureId varchar2(100) not null,
-    CONSTRAINT fk_user_nboard FOREIGN KEY(user_id) REFERENCES user_info(user_id), --공지 작성자
-    CONSTRAINT fk_file_nboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
+    CONSTRAINT fk_user_nboard FOREIGN KEY(user_id) REFERENCES user_info(user_id) --공지 작성자
+   -- CONSTRAINT fk_file_nboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
 create sequence nboard_sequence; --공지 번호 시퀀스
 
@@ -86,7 +87,7 @@ CREATE TABLE notice_reply ( --공지 댓글
     file_pictureId varchar2(100) not null, --fk
     nboard_no NUMBER(10) not null, --fk
     CONSTRAINT fk_user_notice FOREIGN KEY(user_id) REFERENCES user_info(user_id), --댓글 작성자
-    CONSTRAINT fk_file_notice FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId),
+   --CONSTRAINT fk_file_notice FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId),
     CONSTRAINT fk_nboard_nreply FOREIGN KEY(nboard_no) REFERENCES notice_board(nboard_no)
 );
 create sequence nreply_sequence; --공지 댓글 번호 시퀀스
@@ -124,6 +125,8 @@ CREATE TABLE order_board ( --주문 게시판
     order_regdate DATE DEFAULT sysdate,--주문일
     ordder_cancelDate Date, --주문 취소일
     order_status varchar2(20) not null, --상태(1-주문완료, 2-택배사전달, 3-배송준비, 4-배송중, 5-배송완료, 0-주문취소)
+    order_totalprice varchar2(1000) not null, -- 가격
+    order_totalcount varchar2(100) not null, --갯수
     user_id varchar2(100) not null, --fk
     product_id varchar2(20) not null, --fk
     pboard_unit_no varchar2(20) not null, --fk
@@ -131,8 +134,8 @@ CREATE TABLE order_board ( --주문 게시판
     CONSTRAINT fk_products_order FOREIGN KEY(product_id) REFERENCES products_info(product_id), --상품 아이디(아이디, 색)
     CONSTRAINT fk_pboard_order FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no) --상품 게시글 번호(재고)
 );
-alter table order_board add(order_totalprice varchar2(1000) not null); -- 가격
-alter table order_board add(order_totalcount varchar2(100) not null); --갯수
+--alter table order_board add(order_totalprice varchar2(1000) not null); -- 가격
+--alter table order_board add(order_totalcount varchar2(100) not null); --갯수
 create sequence order_sequence; --주문 아이디 용 시퀀스
 
 commit;
@@ -157,6 +160,7 @@ drop sequence nreply_sequence;
 drop sequence nboard_sequence;
 drop sequence pboard_sequence;
 drop sequence products_sequence;
+drop sequence user_sequence;
 drop sequence file_sequence;
 
 

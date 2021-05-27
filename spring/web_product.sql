@@ -1,23 +1,49 @@
 insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
-    values (file_sequence.nextval, 'name','uuid', 'src', 'image', '3');
+    values (file_sequence.nextval, 'name','uuid1', 'src', 'image', '3');
 
 insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
-    values (file_sequence.nextval, 'ipadname','uuid', 'src', 'image', '3');
+    values (file_sequence.nextval, 'ipadname','uuid2', 'src', 'image', '3');
 
 insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
     values (file_sequence.nextval, 'user01_name','user01_uuid', 'src', 'image', '4');
 
 insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
     values (file_sequence.nextval, 'product01','product01_uuid', 'src', 'image', '3');
+    
+insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
+values (file_sequence.nextval, 'pboard01','pboard01_uuid', 'src', 'image', '3');
 
-insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '1', 'apple', 'ipad4','tablet', '#dfe6e9');
+insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
+values (5, 'pboard02','pboard02_uuid', 'src', 'image', '3');
+
+insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'apple', 'ipad4','tablet', '#dfe6e9');
+insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'apple', 'ipad5','tablet', '#dfe6e9');
 
 insert into user_info(user_id, file_pictureId, user_email, user_name, user_password, user_contact, user_enabled, user_type, user_regdate, user_gender, user_birth, user_address, user_interesting, user_enabledContent) 
-    values(user_sequence.nextval, 2, 'user01@naver.com', 'user01', '1234', '01012345678', 1, 1, sysdate, 'male', '1990-12-14', '서울시 금천구', '코딩', 'null');
+    values(user_sequence.nextval, 4, 'user01@naver.com', 'user01', '1234', '01012345678', 1, 1, sysdate, 'male', '1990-12-14', '서울시 금천구', '코딩', 'null');
 
 insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
-    values(pboard_sequence.nextval, 390000, 0, '999', 6, 1, 3);
-  
+    values(pboard_sequence.nextval, 390000, 0, '999', 2, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+    values(pboard_sequence.nextval, 400000, 0, '999', 2, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+    values(pboard_sequence.nextval, 410000, 0, '999', 2, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+    values(pboard_sequence.nextval, 420000, 0, '999', 2, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+    values(pboard_sequence.nextval, 430000, 0, '999', 2, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+    values(pboard_sequence.nextval, 440000, 0, '999', 2, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+values(pboard_sequence.nextval, 30000, 0, '999', 1, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+values(pboard_sequence.nextval, 31000, 0, '999', 1, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+values(pboard_sequence.nextval, 32000, 0, '999', 1, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+values(pboard_sequence.nextval, 33000, 0, '999', 1, 1, 5);
+insert into product_board(pboard_unit_no, pboard_unit_price, pboard_unit_condition, pboard_unit_stocks, product_id, user_id, file_pictureId)
+values(pboard_sequence.nextval, 34000, 0, '999', 1, 1, 5);
 commit;
 rollback;
 

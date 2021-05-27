@@ -79,7 +79,7 @@ select * from tbl_attach order by attachno desc;
 create sequence seq_attach; 
 
 -- PK 생성
-alter table tbl_attach add constraint pk_attach primary key (uuid); 
+alter table tbl_attach add constraint pk_attach primary key (uuid);
 
 -- 1건 삽입
 insert into tbl_attach values (SEQ_ATTACH.nextval, 'uuid', 'uploadPath', 'filename', 'N', sysdate);
