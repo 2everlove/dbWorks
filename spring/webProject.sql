@@ -23,6 +23,19 @@ CREATE TABLE products_info ( --상품 정보
 );
 create SEQUENCE products_sequence; --상품 정보 시퀀스
 
+CREATE TABLE code_info(
+    code_no varchar2(200) primary key,
+    code_type varchar2(100) not null, --카테고리,제조사
+    code_value varchar2(100) not null, -- 값(tablet, samsung), 메뉴값
+    code_regdate date default sysdate, --생성일
+    code_updateDate date default sysdate, --업데이트
+    code__UP_MENU_ID VARCHAR2(50 BYTE), --상위메뉴
+    code_menu_URL VARCHAR2(50 BYTE), --메뉴 주소
+	code_menu_SORT NUMBER(2,0), --메뉴 정렬
+	code_menu_VISIBLE CHAR(1 BYTE) --메뉴 보이기
+);
+create SEQUENCE code_sequence; --코드 정보 시퀀스
+
 CREATE TABLE user_info ( --회원 정보
     user_id varchar2(100) PRIMARY KEY, --아이디
     file_pictureId varchar2(100) not null, --fk

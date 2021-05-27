@@ -5,6 +5,9 @@ insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, f
     values (file_sequence.nextval, 'ipadname','uuid2', 'src', 'image', '3');
 
 insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
+values ('23', 'file_name.jpg', 'file_uuid', 'file_uploadPath', 'file_type', '3'); 
+
+insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
     values (file_sequence.nextval, 'user01_name','user01_uuid', 'src', 'image', '4');
 
 insert into common_file(file_pictureId, file_name, file_uuid, file_uploadPath, file_type, file_usingType) 
@@ -76,3 +79,14 @@ select rownum num, pboard.* from (select board.*, rank() over(partition by produ
     where each_rank between 1 and 5;
 
 select rownum num, board.* from (select pboard.* from product_board pboard order by TO_NUMBER(pboard_unit_price) asc) board;
+
+--search
+select DISTINCT product_category from products_info where product_category like '%t%';
+select product_category from products_info where product_category like '%t%';
+
+--search & insert
+insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'category', 'tablet');manufacturer
+insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'manufacturer', 'apple');
+commit;
+select * from code_info;
+select distinct code_value from code_info where code_type = 'category' and code_value like '%ta%';
