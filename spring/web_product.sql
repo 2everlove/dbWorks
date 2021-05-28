@@ -85,8 +85,8 @@ select DISTINCT product_category from products_info where product_category like 
 select product_category from products_info where product_category like '%t%';
 
 --search & insert
-insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'category', 'tablet');manufacturer
-insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'manufacturer', 'apple');
+insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'category', 'tablet');
+insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'manufacturer', 'samsung');
 commit;
 select * from code_info;
-select distinct code_value from code_info where code_type = 'category' and code_value like '%ta%';
+select distinct code_value from code_info where code_type = 'manufacturer' and code_value like '%a%';

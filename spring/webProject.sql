@@ -55,6 +55,8 @@ CREATE TABLE user_info ( --회원 정보
     --CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
 --alter table user_info add(user_nickname varchar2(50));
+alter table user_info add sessionkey varchar2(50);
+alter table user_info add sessionlimit Date;
 create sequence user_sequence; --유저 시퀀스
 
 CREATE TABLE product_board ( --상품 상세 게시판
