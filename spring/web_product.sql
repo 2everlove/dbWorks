@@ -21,8 +21,9 @@ values (5, 'pboard02','pboard02_uuid', 'src', 'image', '3');
 
 insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'apple', 'ipad4','tablet', '#dfe6e9');
 insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'apple', 'ipad5','tablet', '#dfe6e9');
-insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'samsung', 'galaxyCom','computer', '#dfe6e9');
-
+insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'samsung', 'galaxyCom1','computer', '#dfe6e9');
+insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'samsung', 'galaxyCom2','computer', '#dfe6e9');
+insert into products_info(product_id, file_pictureId, product_manufacturer, product_name, product_category, product_color) values (products_sequence.nextval, '4', 'samsung', 'galaxyCom3','computer', '#dfe6e9');
 
 insert into user_info(user_id, file_pictureId, user_email, user_name, user_password, user_contact, user_enabled, user_type, user_regdate, user_gender, user_birth, user_address, user_interesting, user_enabledContent) 
     values(user_sequence.nextval, 4, 'user01@naver.com', 'user01', '1234', '01012345678', 1, 1, sysdate, 'male', '1990-12-14', '서울시 금천구', '코딩', 'null');
@@ -76,7 +77,7 @@ select rownum num, board.* from (
         (select product_id00 from products_info where product_category='tablet') 
     order by TO_NUMBER(pboard_unit_price) asc) board;
 
-select rownum num, pboard.* from (select board.*, rank() over(partition by product_id order by pboard_unit_price) each_rank from (
+select rownum num, pboard.* from (select board.*, rank() over(partition by product_id order by pboard_unit_price, pboard_unit_regdate desc) each_rank from (
     select * from product_board where product_id in(
         select product_id from products_info where product_category='tablet') ) board) pboard
     where each_rank between 1 and 5;
@@ -89,7 +90,11 @@ select product_category from products_info where product_category like '%t%';
 
 --search & insert
 insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'category', 'tablet');
+select distinct product_category, product_manufacturer from products_info where product_name like '%a%';
 insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'manufacturer', 'samsung');
+select distinct product_category, product_manufacturer, product_name, product_id, file_pictureId, product_color, product_regdate, product_description 
+		from products_info 
+		where product_id = 2;
 commit;
 select * from code_info;
 select distinct code_value from code_info where code_type = 'manufacturer' and code_value like '%a%';

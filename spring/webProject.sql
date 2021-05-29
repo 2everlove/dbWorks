@@ -62,7 +62,7 @@ create sequence user_sequence; --유저 시퀀스
 CREATE TABLE product_board ( --상품 상세 게시판
     pboard_unit_no varchar2(20) PRIMARY KEY, --게시판 번호
     pboard_unit_price varchar2(200) NOT NULL, --상품 가격
-    pboard_unit_condition VARCHAR2(20) NOT NULL, --상품 상태(0-신상, 1-할인, 2-중고)
+    pboard_unit_condition VARCHAR2(20) NOT NULL, --상품 상태(0-신상, 1-할인, 2-이벤트)
     pboard_unit_stocks VARCHAR2(10) NOT NULL, --상품 재고
     pboard_unit_regdate DATE DEFAULT sysdate, --상품 게시판 등록일
     pboard_unit_updateDate DATE DEFAULT sysdate, --상품 게시판 수정일
