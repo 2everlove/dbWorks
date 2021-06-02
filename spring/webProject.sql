@@ -23,7 +23,7 @@ CREATE TABLE products_info ( --상품 정보
 );
 create SEQUENCE products_sequence; --상품 정보 시퀀스
 
-CREATE TABLE code_info(
+CREATE TABLE code_info(--카테고리,제조사를 type으로 가지는 table
     code_no varchar2(200) primary key,
     code_type varchar2(100) not null, --카테고리,제조사
     code_value varchar2(100) not null, -- 값(tablet, samsung), 메뉴값
@@ -55,8 +55,8 @@ CREATE TABLE user_info ( --회원 정보
     --CONSTRAINT fk_file_user FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
 --alter table user_info add(user_nickname varchar2(50));
-alter table user_info add user_sessionkey varchar2(50);
-alter table user_info add user_sessionlimit Date;
+alter table user_info add sessionkey varchar2(50); --자동로그인 세션키
+alter table user_info add sessionlimit Date; --자동로그인 세션제한시간
 create sequence user_sequence; --유저 시퀀스
 
 CREATE TABLE product_board ( --상품 상세 게시판
@@ -73,6 +73,7 @@ CREATE TABLE product_board ( --상품 상세 게시판
     CONSTRAINT fk_user_pboard FOREIGN KEY(user_id) REFERENCES user_info(user_id)
     --CONSTRAINT fk_file_pboard FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
+alter table product_board add(pboard_unit_enabled varchar2(20)); --상품 보여주기(0-기본, 1-숨기(삭제를 누르면 1로 update해서 숨김// delete 처리 안함))
 create SEQUENCE pboard_sequence; --상품 게시판 번호 시퀀스
 
 
@@ -119,6 +120,7 @@ CREATE TABLE inquiry_board ( --문의 게시판
     CONSTRAINT fk_user_iboard FOREIGN KEY(user_id) REFERENCES user_info(user_id) --문의 작성자
 );
 create sequence iboard_sequence; -- 문의 번호 시퀀스
+alter table inquiry_board add iboard_regdate_New Date; --문의 비밀글, 공개글 구분
 
 
 CREATE TABLE inquiry_reply ( --문의 댓글
@@ -153,11 +155,25 @@ CREATE TABLE order_board ( --주문 게시판
 --alter table order_board add(order_totalcount varchar2(100) not null); --갯수
 create sequence order_sequence; --주문 아이디 용 시퀀스
 
+CREATE TABLE cart_board ( --장바구니 게시판
+    cart_id varchar2(20) PRIMARY KEY, --장바구니 아이디
+    user_id varchar2(100), --유저 아이디
+    user_name varchar2(100), --유저 이름
+    product_id varchar(20), --상품 아이디
+    product_name varchar2(20), --상품 이름
+    pboard_unit_no varchar2(20), --게시판 번호
+    cart_totalprice varchar2(1000), --가격
+    cart_totalcount varchar2(100), --갯수
+    user_address varchar2(200) --가격
+);
+create sequence cart_sequence; -- 장바구니 시퀀스
+
 commit;
 
  
 --삭제 순서
 --테이블 삭제
+drop table cart_board;
 drop table inquiry_reply;
 drop table notice_reply;
 drop table inquiry_board;
@@ -168,6 +184,7 @@ drop table products_info;
 drop table user_info;
 drop table common_file;
 --시퀀스 삭제
+drop sequence cart_sequence;
 drop sequence order_sequence;
 drop sequence ireply_sequence;
 drop sequence iboard_sequence;
