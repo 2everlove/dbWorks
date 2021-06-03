@@ -21,6 +21,7 @@ CREATE TABLE products_info ( --상품 정보
     product_regdate DATE DEFAULT sysdate --상품 등록일
     --CONSTRAINT fk_file_products FOREIGN KEY(file_pictureId) REFERENCES common_file(file_pictureId)
 );
+ALTER TABLE products_info MODIFY product_category VARCHAR2(30);
 create SEQUENCE products_sequence; --상품 정보 시퀀스
 
 CREATE TABLE code_info(--카테고리,제조사를 type으로 가지는 table
