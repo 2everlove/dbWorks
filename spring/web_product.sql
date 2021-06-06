@@ -65,6 +65,8 @@ select * from user_info;
 
 select * from product_board;
 
+select * from code_info;
+
 select * from product_board where pboard_unit_no=21;
 
 select count(*) from product_board;
@@ -133,6 +135,9 @@ select rownum num, pboard.* from (
 
 
 select * from products_info where product_id in (select product_id from products_info where product_manufacturer like '%app%');
+
+--admin
+select board.* from (select rownum num, pboard.* from (select * from product_board where user_id = '1') pboard)board;
 
 --!search & insert
 insert into code_info(code_no, code_type, code_value) values(code_sequence.nextval, 'category', 'tablet');

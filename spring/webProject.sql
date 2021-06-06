@@ -58,7 +58,7 @@ CREATE TABLE user_info ( --회원 정보
 --alter table user_info add(user_nickname varchar2(50));
 alter table user_info add sessionkey varchar2(50); --자동로그인 세션키
 alter table user_info add sessionlimit Date; --자동로그인 세션제한시간
-create sequence user_sequence; --유저 시퀀스
+--create sequence user_sequence; --유저 시퀀스
 
 CREATE TABLE product_board ( --상품 상세 게시판
     pboard_unit_no varchar2(20) PRIMARY KEY, --게시판 번호
@@ -135,6 +135,20 @@ CREATE TABLE inquiry_reply ( --문의 댓글
 );
 create sequence ireply_sequence; -- 문의 댓글 번호 시퀀스
 
+
+CREATE TABLE product_review ( -- 제품 리뷰
+    review_num NUMBER(10) PRIMARY KEY, --리뷰 번호
+    review_content varchar2(1000) NOT NULL, -- 리뷰 내용
+    review_regdate DATE DEFAULT sysdate, -- 리뷰 작성일
+    review_rate NUMBER(10) NOT NULL, --리뷰 별점
+    pboard_unit_no varchar2(20) not null, --fk
+    user_id varchar2(100) not null, --fk
+    CONSTRAINT fk_pboard_review FOREIGN KEY(pboard_unit_no) REFERENCES product_board(pboard_unit_no), --리뷰 상품
+    CONSTRAINT fk_user_review FOREIGN KEY(user_id) REFERENCES user_info(user_id)--리뷰 작성자
+); 
+create sequence review_sequence; -- 리뷰 번호 시퀀스
+
+--drop table product_review;
 
 CREATE TABLE order_board ( --주문 게시판
     order_id varchar2(20) PRIMARY KEY, --주문 아이디
