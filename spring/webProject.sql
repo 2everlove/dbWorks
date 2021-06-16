@@ -122,6 +122,7 @@ CREATE TABLE inquiry_board ( --문의 게시판
 );
 create sequence iboard_sequence; -- 문의 번호 시퀀스
 alter table inquiry_board add iboard_regdate_New Date; --문의 비밀글, 공개글 구분
+ALTER TABLE INQUIRY_BOARD ADD REPLY_COUNT VARCHAR(10); -- 문의 조회수
 
 
 CREATE TABLE inquiry_reply ( --문의 댓글
@@ -134,6 +135,8 @@ CREATE TABLE inquiry_reply ( --문의 댓글
     CONSTRAINT fk_iboard_ireply FOREIGN KEY(iboard_no) REFERENCES inquiry_board(iboard_no) --문의 글 번호
 );
 create sequence ireply_sequence; -- 문의 댓글 번호 시퀀스
+alter table inquiry_reply drop CONSTRAINT fk_iboard_ireply; --기존 제약 해제
+alter table inquiry_reply add CONSTRAINT fk_iboard_ireply foreign key(iboard_no) references inquiry_board(iboard_no) on delete cascade; --캐스케이드 실행
 
 
 CREATE TABLE product_review ( -- 제품 리뷰
