@@ -137,6 +137,7 @@ CREATE TABLE inquiry_reply ( --문의 댓글
 create sequence ireply_sequence; -- 문의 댓글 번호 시퀀스
 alter table inquiry_reply drop CONSTRAINT fk_iboard_ireply; --기존 제약 해제
 alter table inquiry_reply add CONSTRAINT fk_iboard_ireply foreign key(iboard_no) references inquiry_board(iboard_no) on delete cascade; --캐스케이드 실행
+alter table inquiry_reply drop column user_id; --어차피 관리자만 가능
 
 
 CREATE TABLE product_review ( -- 제품 리뷰
