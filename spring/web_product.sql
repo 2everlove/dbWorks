@@ -120,6 +120,10 @@ select * from products_info where product_id in( select product_id from (
     select pboard.*, product_category product_search4 from products_info pboard
 ) where product_search4 like lower('%computer%'));
 
+--join ex
+select a.* from products_info a left outer join products_info b on a.product_category like lower('%computer%');
+
+-----
 select product_manufacturer from products_info where product_manufacturer like '%app%';
 
 select * from products_info where EXISTS (select product_manufacturer from products_info where product_manufacturer like '%app%');
@@ -162,3 +166,6 @@ select pboard.* from (select board.*, dense_rank() over(partition by pboard_unit
 select * from products_info where product_id in (select pboard.product_id from (select board.*, row_number() over(partition by product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank from product_board board) pboard where each_rank='1');
 select * from common_file where file_pictureid in (select file_pictureid from products_info where product_id in (select pboard.product_id from (select board.*, row_number() over(partition by product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank from product_board board) pboard where each_rank='1'));
 select * from user_info where user_id in (select user_id from products_info where product_id in (select pboard.product_id from (select board.*, row_number() over(partition by product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank from product_board board) pboard where each_rank='1'));
+--join ex
+select c.* from common_file c left outer join (select p.* from products_info p left outer join product_board pb on p.product_id = pb.product_id) co on c.file_pictureid=co.file_pictureid;
+------
