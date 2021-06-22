@@ -122,8 +122,9 @@ select * from products_info where product_id in( select product_id from (
 
 --join ex
 select a.* from products_info a left outer join products_info b on a.product_category like lower('%computer%');
-
 -----
+select product.product_manufacturer|| product.product_category , product.product_name from (select rownum num, p.* from products_info p) product;
+
 select product_manufacturer from products_info where product_manufacturer like '%app%';
 
 select * from products_info where EXISTS (select product_manufacturer from products_info where product_manufacturer like '%app%');
