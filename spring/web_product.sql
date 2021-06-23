@@ -111,6 +111,32 @@ where file_pictureid in (select file_pictureid from products_info where product_
 --!search
 select DISTINCT product_category from products_info where product_category like '%t%';
 select product_category from products_info where product_category like '%t%';
+
+--search product_pboard
+select rownum num, pboard.* from (
+			select board.*, rank() over(partition by product_id order by pboard_unit_price, pboard_unit_regdate desc) each_rank from (
+    			select * from product_board where pboard_unit_enabled = '0' and product_id in(
+        			select product_id from products_info 
+		where product_id in (
+			select product_id from products_info 
+			where 
+			
+				Lower(product_name) like '%com%'
+			
+		)
+        		)) board
+        	) pboard where each_rank between 1 and 5;
+            
+--search product_info            
+select p_i.* from (select * from products_info 
+		where product_id in (
+			select product_id from products_info 
+			where 
+			
+				Lower(product_name) like '%com%'
+			
+)) p_i left join product_board p_b  on p_i.product_id = p_b.product_id where p_b.product_id is not null;
+            
 --검색어로 product_id 찾기(검색은 대소문자를 가리니 product_search를 lower()나 upper()로 감싼 뒤, java단에서 lower,upper를 맞추고 trim()으로 앞뒤 빈공간 제거)
 select * from products_info where product_id in( select product_id from (
     select pboard.*, product_manufacturer||' '||product_category||' '||product_name product_search1, product_manufacturer||' '||product_name product_search2, product_name||' '||product_category||' '||product_manufacturer product_search3, product_name||' '||product_manufacturer||' '||product_category product_search4 from products_info pboard
