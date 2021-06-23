@@ -59,7 +59,7 @@ rollback;
 desc user_info;
 select * from common_file;
 
-select * from products_info;
+select * from products_info where product_id = 24;
 
 select * from user_info;
 
@@ -67,7 +67,7 @@ select * from product_board;
 
 select * from code_info;
 
-select * from product_board where pboard_unit_no=21;
+select * from product_board where pboard_unit_no=81;
 
 select count(*) from product_board;
 
@@ -155,22 +155,37 @@ commit;
 select * from code_info;
 select distinct code_value from code_info where code_type = 'manufacturer' and code_value like '%a%';
 
+select * from cart_board;
+
+update order_board(order_totalcount) values (  (select pboard_unit_stocks from cart_board)cart (select pboard_unit_stocks from product_board where pboard_unit_no = 13)stock);
+
 --search paging
 select board.* from (select rownum rn, pInfo.* from products_info pInfo where product_name like '%a%' and rownum <= (1*10) order by product_regdate desc) board where rn > (1-1)*10;
 
 --!main
 select * from product_board order by product_id desc;
 --main에서 랜덤으로 중복된 product_id 를 제거해서 1개의 게시글을 불러옴
-select distinct nvl(r.review_rate, 0) avg , b.* from (select pboard.* from (select board.*, row_number() over(partition by pboard_unit_condition, product_id order by dbms_random.random) each_rank from product_board board where pboard_unit_enabled = '0') pboard where each_rank='1') b full outer join product_review r on r.pboard_unit_no = b.pboard_unit_no;
+select round(avg(nvl(a.review_rate,0)),0) avg, a.pboard_unit_no from product_review a group by a.pboard_unit_no;
+select * from product_review;
+select nvl(r.review_rate,0) avg , b.* 
+from (select pboard.* from (select board.*, row_number() over(partition by pboard_unit_condition, product_id order by dbms_random.random) each_rank from product_board board where pboard_unit_enabled = '0') pboard where each_rank='1') b 
+full outer join (select round(avg(nvl(a.review_rate,0)),0) review_rate, a.pboard_unit_no from product_review a group by a.pboard_unit_no) r 
+on r.pboard_unit_no = b.pboard_unit_no;
+
 select pboard.* from (select board.*, row_number() over(partition by product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
 select pboard.* from (select board.*, dense_rank() over(partition by pboard_unit_condition,product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
 --불러온 데이터를 기준(어차피 product_id는 1개는 무조건 들어가므로 random필요 없음)으로 products_info 불러옴
 select nvl(r.review_rate,0) avg, b.* from (select * from products_info 
-			where product_id in (
-				select pboard.product_id from (
-					select board.*, row_number() over(partition by pboard_unit_condition, product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank 
-						from product_board board where pboard_unit_enabled = '0') 
-					pboard where each_rank='1')) b full outer join product_review r on r.pboard_unit_no = b.pboard_unit_no;
+        where product_id in (
+            select pboard.product_id 
+            from (
+                select board.*, row_number() over(partition by pboard_unit_condition, product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank 
+                from product_board board where pboard_unit_enabled = '0'
+            ) 
+                pboard where each_rank='1'
+        )
+) b full outer join product_review r on r.pboard_unit_no = b.pboard_unit_no;
+
 select * from products_info where product_id in (select pboard.product_id from (select board.*, row_number() over(partition by product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank from product_board board) pboard where each_rank='1');
 select * from common_file where file_pictureid in (select file_pictureid from products_info where product_id in (select pboard.product_id from (select board.*, row_number() over(partition by product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank from product_board board) pboard where each_rank='1'));
 select * from user_info where user_id in (select user_id from products_info where product_id in (select pboard.product_id from (select board.*, row_number() over(partition by product_id order by pboard_unit_updatedate desc, pboard_unit_regdate asc) each_rank from product_board board) pboard where each_rank='1'));

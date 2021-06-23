@@ -186,6 +186,7 @@ CREATE TABLE cart_board ( --장바구니 게시판
     user_address varchar2(200) --가격
 );
 create sequence cart_sequence; -- 장바구니 시퀀스
+alter table cart_board add(pboard_unit_stocks varchar2(200)); --재고 수
 
 commit;
 
