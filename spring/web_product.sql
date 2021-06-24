@@ -220,10 +220,11 @@ select pboard.* from (select board.*, dense_rank() over(partition by pboard_unit
 
 --history
 select p.file_pictureId masterImg, b.* from (select * 
-		from product_board where pboard_unit_no = '61' or pboard_unit_no = '81' or pboard_unit_no = '22' or pboard_unit_no = '17' 
-		
-        ) b full outer join products_info p on b.product_id = p.product_id where b.pboard_unit_no is not null order by
-		DECODE(pboard_unit_no, '61', 1, '81', 2,'22', 3,'17',4);
+		from product_board where pboard_unit_no = '61' or pboard_unit_no = '81' or pboard_unit_no = '22' or pboard_unit_no = '17'
+        ) b 
+full outer join products_info p on b.product_id = p.product_id 
+where b.pboard_unit_no is not null 
+order by DECODE(pboard_unit_no, '61', 1, '81', 2,'22', 3,'17',4);
 
 
 --불러온 데이터를 기준(어차피 product_id는 1개는 무조건 들어가므로 random필요 없음)으로 products_info 불러옴
