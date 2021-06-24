@@ -135,8 +135,25 @@ select p_i.* from (select * from products_info
 			
 				Lower(product_name) like '%com%'
 			
-)) p_i left join product_board p_b  on p_i.product_id = p_b.product_id where p_b.product_id is not null;
-            
+)) p_i left join product_board p_b  on p_i.product_id = p_b.product_id where p_b.product_id is null;
+
+--onClick type on search
+select distinct p_i.* from (select * from products_info where product_category='tablet') p_i left join product_board p_b on p_i.product_id = p_b.product_id where p_b.product_id is not null;
+
+select * from products_info where product_category='tablet';
+
+select pb.*, f.file_uploadpath from (select p.file_pictureId masterImg, b.* from (select * 
+		from product_board 
+		where pboard_unit_no = 14 and pboard_unit_no = 61 and pboard_unit_no =20
+			
+		) b full outer join products_info p on b.product_id = p.product_id where b.pboard_unit_no is not null) pb full outer join common_file f on f.file_pictureId = pb.masterImg where f.file_pictureid is not null;
+        
+select p.file_pictureId masterImg, b.* from (select * 
+		from product_board 
+		where
+				pboard_unit_no = 14 or pboard_unit_no = 61 or pboard_unit_no =20 or pboard_unit_no =81
+			
+		) b full outer join products_info p on b.product_id = p.product_id where b.pboard_unit_no is not null;
 --검색어로 product_id 찾기(검색은 대소문자를 가리니 product_search를 lower()나 upper()로 감싼 뒤, java단에서 lower,upper를 맞추고 trim()으로 앞뒤 빈공간 제거)
 select * from products_info where product_id in( select product_id from (
     select pboard.*, product_manufacturer||' '||product_category||' '||product_name product_search1, product_manufacturer||' '||product_name product_search2, product_name||' '||product_category||' '||product_manufacturer product_search3, product_name||' '||product_manufacturer||' '||product_category product_search4 from products_info pboard
@@ -200,6 +217,15 @@ on r.pboard_unit_no = b.pboard_unit_no;
 
 select pboard.* from (select board.*, row_number() over(partition by product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
 select pboard.* from (select board.*, dense_rank() over(partition by pboard_unit_condition,product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
+
+--history
+select p.file_pictureId masterImg, b.* from (select * 
+		from product_board where pboard_unit_no = '61' or pboard_unit_no = '81' or pboard_unit_no = '22' or pboard_unit_no = '17' 
+		
+        ) b full outer join products_info p on b.product_id = p.product_id where b.pboard_unit_no is not null order by
+		DECODE(pboard_unit_no, '61', 1, '81', 2,'22', 3,'17',4);
+
+
 --불러온 데이터를 기준(어차피 product_id는 1개는 무조건 들어가므로 random필요 없음)으로 products_info 불러옴
 select nvl(r.review_rate,0) avg, b.* from (select * from products_info 
         where product_id in (
