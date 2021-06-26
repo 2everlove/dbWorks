@@ -224,19 +224,46 @@ select * from product_review;
 
 select a.*, rownum num from (select nvl(r.review_rate,0) avg , b.* 
 from (select pboard.* 
-        from (select board.*, row_number() over(partition by pboard_unit_condition, product_id order by dbms_random.random) each_rank 
+        from (select distinct board.*, row_number() over(partition by pboard_unit_condition, product_id order by dbms_random.random) each_rank 
             from product_board board where pboard_unit_enabled = '0'
         ) pboard where each_rank='1' 
     ) b 
-full outer join (select round(avg(nvl(a.review_rate,0)),0) review_rate, a.pboard_unit_no 
+left join (select round(avg(nvl(a.review_rate,0)),0) review_rate, a.pboard_unit_no 
         from product_review a group by a.pboard_unit_no 
-    ) r 
+    ) r
 on r.pboard_unit_no = b.pboard_unit_no where b.pboard_unit_no is not null order by dbms_random.random) a order by num;
+
+select distinct pboard.* 
+        from (select board.*, row_number() over(partition by product_id order by dbms_random.random) each_rank 
+            from product_board board where pboard_unit_enabled = '0'
+        ) pboard where each_rank='1';
 
 select pboard.* from (select board.*, row_number() over(partition by product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
 select pboard.* from (select board.*, dense_rank() over(partition by pboard_unit_condition,product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
 
 select product.* from (select rownum num, p.* from products_info p) product where num between 1 * 5-4 and 1 * 5; 
+
+--order
+select * from order_board;
+
+select o.* 
+from order_board o 
+left join product_board p 
+on o.pboard_unit_no = p.pboard_unit_no 
+where o.pboard_unit_no is not null 
+and p.user_id='1';
+
+select * from product_board;
+select * from user_info;
+select rownum num, order_board.* from order_board where pboard_user_id = '1';
+select order_board.* from (select rownum num, order_board.* from order_board where pboard_user_id = 'user01') order_board;
+
+select orde.* from (select rownum num, o.* 
+		from order_board o 
+		left join product_board p 
+		on o.pboard_unit_no = p.pboard_unit_no 
+		where o.pboard_unit_no is not null 
+		and p.user_id= 'user01') orde where num between 1 * 10-9 and 1 * 10;
 
 --history
 select p.file_pictureId masterImg, b.* from (select * 

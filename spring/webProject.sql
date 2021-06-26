@@ -172,6 +172,7 @@ CREATE TABLE order_board ( --주문 게시판
 );
 --alter table order_board add(order_totalprice varchar2(1000) not null); -- 가격
 --alter table order_board add(order_totalcount varchar2(100) not null); --갯수
+alter table order_board add pboard_user_id varchar2(100); --OrderVO - pboard_user_id추가
 create sequence order_sequence; --주문 아이디 용 시퀀스
 
 CREATE TABLE cart_board ( --장바구니 게시판
