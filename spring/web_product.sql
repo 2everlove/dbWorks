@@ -295,3 +295,10 @@ select c.* from common_file c left outer join (select p.* from products_info p l
 select distinct product_manufacturer, product_category, product_name
 		from products_info
 		where lower(product_manufacturer) = 'sony';
+        
+        
+select pbIn.* from (select rownum num, pb.* from (
+    select board.* from (select pboard.* from (select * from product_board where user_id = '1' order by TO_NUMBER(pboard_unit_enabled)) pboard
+        )board 
+    ) pb 
+left join products_info pi on pb.product_id=pi.product_id where pi.product_name like '%pad5%') pbIn where num between 1 * 10-9 and 1 * 10;
