@@ -163,6 +163,16 @@ select * from products_info where product_id in( select product_id from (
     select pboard.*, product_category product_search4 from products_info pboard
 ) where product_search4 like lower('%computer%'));
 
+--!search product_info
+ select distinct p_i.*  from (select * from products_info 
+      where product_id in (
+         select product_id from products_info 
+         where 
+         
+            Lower(product_name) like '%ip%'
+         
+      )) p_i left join product_board p_b on p_i.product_id = p_b.product_id where p_b.product_id is not null and p_b.pboard_unit_enabled = '0';
+
 --join ex
 select a.* from products_info a left outer join products_info b on a.product_category like lower('%computer%');
 -----
@@ -209,14 +219,24 @@ select board.* from (select rownum rn, pInfo.* from products_info pInfo where pr
 select * from product_board order by product_id desc;
 --main에서 랜덤으로 중복된 product_id 를 제거해서 1개의 게시글을 불러옴
 select round(avg(nvl(a.review_rate,0)),0) avg, a.pboard_unit_no from product_review a group by a.pboard_unit_no;
+
 select * from product_review;
-select nvl(r.review_rate,0) avg , b.* 
-from (select pboard.* from (select board.*, row_number() over(partition by pboard_unit_condition, product_id order by dbms_random.random) each_rank from product_board board where pboard_unit_enabled = '0') pboard where each_rank='1') b 
-full outer join (select round(avg(nvl(a.review_rate,0)),0) review_rate, a.pboard_unit_no from product_review a group by a.pboard_unit_no) r 
-on r.pboard_unit_no = b.pboard_unit_no;
+
+select a.*, rownum num from (select nvl(r.review_rate,0) avg , b.* 
+from (select pboard.* 
+        from (select board.*, row_number() over(partition by pboard_unit_condition, product_id order by dbms_random.random) each_rank 
+            from product_board board where pboard_unit_enabled = '0'
+        ) pboard where each_rank='1' 
+    ) b 
+full outer join (select round(avg(nvl(a.review_rate,0)),0) review_rate, a.pboard_unit_no 
+        from product_review a group by a.pboard_unit_no 
+    ) r 
+on r.pboard_unit_no = b.pboard_unit_no where b.pboard_unit_no is not null order by dbms_random.random) a order by num;
 
 select pboard.* from (select board.*, row_number() over(partition by product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
 select pboard.* from (select board.*, dense_rank() over(partition by pboard_unit_condition,product_id order by dbms_random.random) each_rank from product_board board) pboard where each_rank='1';
+
+select product.* from (select rownum num, p.* from products_info p) product where num between 1 * 5-4 and 1 * 5; 
 
 --history
 select p.file_pictureId masterImg, b.* from (select * 
@@ -225,7 +245,6 @@ select p.file_pictureId masterImg, b.* from (select *
 full outer join products_info p on b.product_id = p.product_id 
 where b.pboard_unit_no is not null 
 order by DECODE(pboard_unit_no, '61', 1, '81', 2,'22', 3,'17',4);
-
 
 --불러온 데이터를 기준(어차피 product_id는 1개는 무조건 들어가므로 random필요 없음)으로 products_info 불러옴
 select nvl(r.review_rate,0) avg, b.* from (select * from products_info 
@@ -245,3 +264,7 @@ select * from user_info where user_id in (select user_id from products_info wher
 --join ex
 select c.* from common_file c left outer join (select p.* from products_info p left outer join product_board pb on p.product_id = pb.product_id) co on c.file_pictureid=co.file_pictureid;
 ------
+
+select distinct product_manufacturer, product_category, product_name
+		from products_info
+		where lower(product_manufacturer) = 'sony';
