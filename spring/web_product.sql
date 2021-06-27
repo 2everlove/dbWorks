@@ -302,3 +302,49 @@ select pbIn.* from (select rownum num, pb.* from (
         )board 
     ) pb 
 left join products_info pi on pb.product_id=pi.product_id where pi.product_name like '%pad5%') pbIn where num between 1 * 10-9 and 1 * 10;
+
+--nboard
+select n.*, n.nboard_regDate+7 from notice_board n;
+
+select * from order_board;
+--order
+
+select order_board.*, pi.product_name from (
+    select rownum num, orderb.* from (
+        select o.* 
+        from order_board o 
+        left join product_board p 
+        on o.pboard_unit_no = p.pboard_unit_no 
+        where o.pboard_unit_no is not null 
+        and p.user_id= ${pboard_user_id}
+    ) orderb 
+)order_board left join products_info pi on order_board.product_id = pi.product_id 
+where num between #{pageNo} * #{amount}-9 and #{pageNo} * #{amount} 
+order by order_board.order_id desc;
+
+select ob.* from (select rownum num, order_board.*, pi.product_name from (select orderb.* from (select o.* 
+from order_board o 
+left join product_board p 
+on o.pboard_unit_no = p.pboard_unit_no 
+where o.pboard_unit_no is not null 
+and p.user_id= '1') orderb )order_board left join products_info pi on order_board.product_id = pi.product_id) ob;
+
+order by order_board.order_id desc;
+        
+select order_board.* from (
+    select rownum num, o.*, p.product_name from (select * from order_board) o
+    left join products_info p 
+    on o.product_id = p.product_id 
+    where o.product_id is not null) 
+order_board where num between 1 * 10-9 and 1 * 10 order by order_board.order_regdate desc;
+
+
+        
+select order_board.* from (
+    (select rownum num, o.* from order_board where user_id = '1' order by order_regdate desc) o
+left join products_info p on o.product_id = p.product_id where o.product_id is not null
+) 
+order_board where num between 1 * 10-9 and 1 * 10;
+
+select order_board.* from ( select rownum num, o.*, p.product_name from (select * from order_board where user_id = '1' order by order_regdate desc) o
+left join products_info p on o.product_id = p.product_id where o.product_id is not null) order_board where num between 1 * 10-9 and 1 * 10;
