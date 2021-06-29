@@ -338,8 +338,14 @@ select order_board.* from (
     where o.product_id is not null) 
 order_board where num between 1 * 10-9 and 1 * 10 order by order_board.order_regdate desc;
 
+select rownum num, pboard.* from (
+			select board.*, rank() over(partition by product_id order by pboard_unit_price, pboard_unit_regdate desc) each_rank from (
+    			select * from product_board where pboard_unit_enabled = '0' and product_id in(
+        			select product_id from products_info where product_category='video') 
+        		) board
+        	) pboard where each_rank between 1 and 5 order by pboard.pboard_unit_price;
+select distinct p_i.* from (select * from products_info where product_category='tablet') p_i left join product_board p_b on p_i.product_id = p_b.product_id where p_b.product_id is not null and p_b.pboard_unit_enabled = '0';
 
-        
 select order_board.* from (
     (select rownum num, o.* from order_board where user_id = '1' order by order_regdate desc) o
 left join products_info p on o.product_id = p.product_id where o.product_id is not null
@@ -348,3 +354,56 @@ order_board where num between 1 * 10-9 and 1 * 10;
 
 select order_board.* from ( select rownum num, o.*, p.product_name from (select * from order_board where user_id = '1' order by order_regdate desc) o
 left join products_info p on o.product_id = p.product_id where o.product_id is not null) order_board where num between 1 * 10-9 and 1 * 10;
+
+--------------
+select order_board.* from (
+    select rownum num, o.*, p.product_name from (select * from order_board where user_id = 'admin' ) o
+    left join products_info p 
+    on o.product_id = p.product_id 
+    where o.product_id is not null order by o.order_regdate desc) 
+order_board where num between 1 and 20 ;
+
+------payment(company)
+select ob.* from (
+    select rownum num, order_board.*, pi.product_name from (
+        select orderb.* from (
+            select o.* 
+            from order_board o 
+            left join product_board p 
+            on o.pboard_unit_no = p.pboard_unit_no 
+            where o.pboard_unit_no is not null 
+            and p.user_id= '1'
+        ) orderb order by orderb.order_id desc
+    )order_board left join products_info pi on order_board.product_id = pi.product_id 
+) ob
+where num between 1 and 20; 
+
+----payment(company)
+select ob.* from (
+    select rownum num, order_board.*, pi.product_name from (
+        select orderb.* from (
+            select o.* 
+            from order_board o 
+            left join product_board p 
+            on o.pboard_unit_no = p.pboard_unit_no 
+            where o.pboard_unit_no is not null 
+            and p.user_id= '22'
+        ) orderb
+    )order_board left join products_info pi on order_board.product_id = pi.product_id order by to_number(order_board.order_id) desc
+) ob where num between 1 and 10;
+
+----payment(admin)
+select order_board.* from (
+    select rownum num, o.*, p.product_name from (select * from order_board order by order_regdate desc) o
+    left join products_info p 
+    on o.product_id = p.product_id 
+    where o.product_id is not null) 
+order_board where num between 1 and 20; 
+
+--user(admin)
+select * from user_info order by user_regdate desc;
+
+---product register
+select distinct LOWER(product_category) as product_category, LOWER(product_manufacturer) as product_manufacturer, LOWER(product_name) as product_name, product_id, file_pictureId, product_color, product_regdate, product_description 
+		from products_info 
+		where LOWER(product_name) like '%asu%';
