@@ -15,3 +15,15 @@ where rnum >=11;
 --oracle 12c 이상부터 가능 쿼리
 select pboard.* from product_board pboard order by pboard_unit_updateDate desc 
 OFFSET 0 ROWS FETCH FIRST 5 ROWS ONLY;
+
+
+
+--check buffer cache(Database Buffers)
+show sga;
+
+--multiblock I/O의 단위
+show parameter db_file_multiblock_read_count;
+alter session set db_file_multiblock_read_count = 128;--8KB*128 = 1MB
+
+--table full scan은 큰 table에서 대량의 data를 읽을 때 유리
+--index range scan은 큰 table에서 소량의 data를 읽을 때 유리(#index가 무조건 좋은건 절대 아님!!)
